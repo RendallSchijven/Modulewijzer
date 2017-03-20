@@ -1,0 +1,49 @@
+﻿@{ 
+    //using Modulewijzer.Factories;
+    //using Modulewijzer.Models;
+
+    Layout = "_Layout.cshtml";
+    Page.title = "Modulewijzer toevoegen";
+
+    Validation.RequireField("name", "Je moet een naam invoeren");
+    Validation.RequireField("EC", "Je moet een aantal EC`s invoeren");
+    Validation.RequireField("Studiejaar", "Je moet een studiejaar invoeren");
+    Validation.RequireField("Periode", "Je moet een periode invoeren");
+
+    if (IsPost && Validation.IsValid())
+    {
+        //var module = ModuleFactory.GetModuleFromPostRequest(Request.Form);
+        Response.Redirect("Leraar_toevoegen");
+    }
+}
+
+<div class="row">
+    <div class="col-md-12 portfolio-item">
+        <form class="form-horizontal" method="post">
+
+            <div class="form-group">
+                <label for="name">Naam modulewijzer<span style="color: red;">*@Html.ValidationMessage("name")</span></label>
+                <input class="form-control" type="text" id="name" name="name" placeholder="Naam modulewijzer">
+            </div>
+
+            <div class="form-group">
+                <label for="EC">Aantal EC`s<span style="color: red;">*@Html.ValidationMessage("EC")</span></label>
+                <input class="form-control" type="text" id="EC" name="EC" placeholder="Aantal EC`S">
+            </div>
+
+            <div class="form-group">
+                <label for="Studiejaar">Studiejaar<span style="color: red;">*@Html.ValidationMessage("Studiejaar")</span></label>
+                <input class="form-control" type="text" id="Studiejaar" name="Studiejaar" placeholder="Studiejaar">
+            </div>
+
+            <div class="form-group">
+                <label for="Periode">Periode<span style="color: red;">*@Html.ValidationMessage("Periode")</span></label>
+                <input class="form-control" type="text" id="Periode" name="Periode" placeholder="Periode">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" name="Modulewijzer_create" class="btn btn-primary" value="Modulewijzer_create">Modulewijzer aanmaken</button>
+            </div>
+        </form>
+    </div>
+</div>
