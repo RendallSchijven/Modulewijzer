@@ -1,4 +1,7 @@
-﻿@{ 
+﻿@using Modulewijzer.Models;
+@using Modulewijzer.Data;
+@using System.Data.SqlClient;
+@{ 
     Layout = "_Layout.cshtml";
     Page.title = "Leraar toevoegen";
 
@@ -6,33 +9,19 @@
 
     if (IsPost && Validation.IsValid())
     {
-        if (Request.Form["Voorletters"] != string.Empty)
+        var docent = new Teacher()
         {
-            //var module = TeacherFactory.GetModuleFromPostRequest(Request.Form);
-            Response.Redirect("Leraar_toevoegen");
-        }
+            Initials = Request.Form["Voorletters"],
+            LastName = Request.Form["Achternaam"]
+        };
 
-
+        DbModules.Instance.Teachers.Create(docent);
+        Response.Redirect("Modulewijzer_toevoegen");
     }
 }
 
 <div class="row">
-    <div class="col-md-6 portfolio-item">
-        <h2>Bestaande leraren toevoegen</h2>
-        <form class="form-horizontal" method="post">
-
-            <div class="form-group">
-                <label for="Leraar">Leraren<span style="color: red;">*@Html.ValidationMessage("Leraar")</span></label><br>
-                <input type="checkbox" id="Leraar" name="Leraar" placeholder="Leraar">Bas<br>
-                <!--For loop om alle leraren uit de database te displayen-->
-            </div>
-            <div class="form-group">
-                <button type="submit" name="Leraar_add" class="btn btn-primary" value="Leraar_add">Modulewijzer aanmaken</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="col-md-6 portfolio-item">
+    <div class="col-md-12 portfolio-item">
         <h2>Nieuwe leraren toevoegen</h2>
         <form class="form-horizontal" method="post">
 

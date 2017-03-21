@@ -1,6 +1,7 @@
 ﻿@using Modulewijzer.Models;
 @using Modulewijzer.Data;
-@{ 
+@using System.Data.SqlClient;
+@{  
 
     Layout = "_Layout.cshtml";
     Page.title = "Modulewijzer toevoegen";
@@ -9,6 +10,7 @@
     Validation.RequireField("EC", "Je moet een aantal EC`s invoeren");
     Validation.RequireField("Studiejaar", "Je moet een studiejaar invoeren");
     Validation.RequireField("Periode", "Je moet een periode invoeren");
+    Validation.RequireField("Leraar", "Je moet minstens 1 leraar selecteren");
 
     if (IsPost && Validation.IsValid())
     {
@@ -26,12 +28,12 @@
 }
 
 <div class="row">
-    <div class="col-md-12 portfolio-item">
+    <div class="col-md-5 portfolio-item">
         <form class="form-horizontal" method="post">
 
             <div class="form-group">
-                <label for="name">Naam modulewijzer<span style="color: red;">*@Html.ValidationMessage("name")</span></label>
-                <input class="form-control" type="text" id="name" name="name" placeholder="Naam modulewijzer">
+                <label for="Naam">Naam modulewijzer<span style="color: red;">*@Html.ValidationMessage("Naam")</span></label>
+                <input class="form-control" type="text" id="Naam" name="Naam" placeholder="Naam modulewijzer">
             </div>
 
             <div class="form-group">
@@ -52,6 +54,39 @@
             <div class="form-group">
                 <button type="submit" name="Modulewijzer_create" class="btn btn-primary" value="Modulewijzer_create">Modulewijzer aanmaken</button>
             </div>
+        </form>
+    </div>
+    <div class="col-md-1" portfolio-item></div>
+    <div class="col-md-5 portfolio-item">
+        <h2>Bestaande leraren toevoegen</h2>
+        <form class="form-horizontal" method="post">
+
+            <div class="form-group">
+                <label for="Leraar">Leraren<span style="color: red;">*@Html.ValidationMessage("Leraar")</span></label><br>
+                @using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
+                {
+                    connection.Open();
+
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT * FROM Docenten";
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int id = reader.GetInt32(0);
+                                string Voorletters = reader.GetString(1);
+                                string Achternaam = reader.GetString(2);
+                                <div><input type="checkbox" id="Leraar" name="Leraar"> @Achternaam, @Voorletters</div>
+                            }
+                        }
+
+                    }
+                    connection.Close();
+                }
+            </div>
+            <a href="~/Leraar_toevoegen.cshtml" class="btn btn-success" role="button">Leraar aanmaken</a>
         </form>
     </div>
 </div>
