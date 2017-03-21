@@ -21,15 +21,19 @@ namespace Modulewijzer.Data
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "INSERT INTO Modulewijzer (Naam, EC, Studiejaar, Periode, Period) " +
-                        "Values(@Name, @NumberEcs, @StudyDate, @EndDate, @Period)";
+                    command.CommandText = "INSERT INTO Modulewijzer (Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning)" +
+                        "Values(@Name, @NumberEcs, @StudyYear, @Period, @Method, @Outcomes, @Literature, @Schedule)";
 
                     SqlParameter[] parameters =
                     {
                         new SqlParameter("@Name", SqlDbType.NVarChar) { Value = module.Name },
                         new SqlParameter("@NumberEcs", SqlDbType.Int) {Value = module.NumberEcs },
                         new SqlParameter("@StudyYear", SqlDbType.Int) { Value = module.StudyYear },
-                        new SqlParameter("@Period", SqlDbType.Int) { Value = module.Period }
+                        new SqlParameter("@Period", SqlDbType.Int) { Value = module.Period },
+                        new SqlParameter("@Method", SqlDbType.NVarChar) {Value = module.Method },
+                        new SqlParameter("@Outcomes", SqlDbType.NVarChar) {Value = module.Outcomes },
+                        new SqlParameter("@Literature", SqlDbType.NVarChar) {Value = module.Literature },
+                        new SqlParameter("@Schedule", SqlDbType.NVarChar) {Value = module.Schedule }
                     };
                     command.Parameters.AddRange(parameters);
 
@@ -52,7 +56,7 @@ namespace Modulewijzer.Data
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM Modulewijzer";
+                    command.CommandText = "SELECT ModulewijzerId, Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning  FROM Modulewijzer";
 
                     using (var reader = command.ExecuteReader())
                     {
@@ -62,7 +66,11 @@ namespace Modulewijzer.Data
                             Name = reader.GetString(1),
                             NumberEcs = reader.GetInt32(2),
                             StudyYear = reader.GetInt32(3),
-                            Period = reader.GetInt32(4)
+                            Period = reader.GetInt32(4),
+                            Method = reader.GetString(5),
+                            Outcomes = reader.GetString(6),
+                            Literature = reader.GetString(7),
+                            Schedule = reader.GetString(8)
                         });
                     }
                 }
@@ -110,14 +118,19 @@ namespace Modulewijzer.Data
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "UPDATE Module SET Name=@Name, @NumberEcs=@NumberEcs, StudyDate=@StudyDate, EndDate=@EndDate, Period=@Period";
+                    command.CommandText = "UPDATE Modulewijzer SET Naam=@Name, EC=@NumberEcs, Studiejaar=@StudyYear, Periode=@Period, Werkvorm=@Method, Leeruitkomsten=@Outcomes, Literatuur=@Literature, Planning=@Schedule WHERE ModulewijzerId=@ModuleId";
 
                     SqlParameter[] parameters =
-{
+                    {
+                        new SqlParameter("@ModuleId", SqlDbType.Int) {Value = module.Id },
                         new SqlParameter("@Name", SqlDbType.NVarChar) { Value = module.Name },
                         new SqlParameter("@NumberEcs", SqlDbType.Int) {Value = module.NumberEcs },
-                        new SqlParameter("@StudyDate", SqlDbType.Int) { Value = module.StudyDate },
-                        new SqlParameter("@Period", SqlDbType.Int) { Value = module.Period }
+                        new SqlParameter("@StudyYear", SqlDbType.Int) { Value = module.StudyYear },
+                        new SqlParameter("@Period", SqlDbType.Int) { Value = module.Period },
+                        new SqlParameter("@Method", SqlDbType.NVarChar) {Value = module.Method },
+                        new SqlParameter("@Outcomes", SqlDbType.NVarChar) {Value = module.Outcomes },
+                        new SqlParameter("@Literature", SqlDbType.NVarChar) {Value = module.Literature },
+                        new SqlParameter("@Schedule", SqlDbType.NVarChar) {Value = module.Schedule }
                     };
                     command.Parameters.AddRange(parameters);
 
@@ -135,7 +148,7 @@ namespace Modulewijzer.Data
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM Docenten";
+                    command.CommandText = "SELECT DocentId, Voorletters, Achternaam FROM Docenten";
 
                     using (var reader = command.ExecuteReader())
                     {
@@ -160,7 +173,7 @@ namespace Modulewijzer.Data
         /// <param name="competence">The module to delete.</param>
         public void Delete(Module module)
         {
-            using (var connection = new SqlConnection("ModuleWijzer"))
+            using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
             {
                 connection.Open();
 

@@ -16,7 +16,6 @@
 
         public TableModules Modules { get; } = new TableModules();
         public TableCompetences Competences { get; } = new TableCompetences();
-        public TableMethods Methods { get; } = new TableMethods();
         public TableTeachers Teachers { get; } = new TableTeachers();
     }
 }

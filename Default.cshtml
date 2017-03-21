@@ -1,5 +1,65 @@
-﻿@{ 
+﻿@using Modulewijzer.Models;
+@using Modulewijzer.Data;
+@using System.Data.SqlClient;
+@{   
     Layout = "_Layout.cshtml";
+    Page.title = "Home";
+
+    int ModulewijzerId;
+    string naam = "";
+    string EC = "";
+    string studiejaar = "";
+    string periode = "";
+    string werkvorm = "";
+    string leeruitkomsten = "";
+    string literatuur = "";
+    string planning = "";
 }
 
-<a href="~/Modulewijzer_toevoegen.cshtml" class="btn btn-success" role="button">Modulewijzer maken</a>
+<div class="table-responsive">
+    <h2>Modules</h2>
+    <table class="table-bordered">
+        <tr>
+            <th>Naam</th>
+            <th>EC`s</th>
+            <th>Studiejaar</th>
+            <th>Periode</th>
+        </tr>
+        @using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
+        {
+            connection.Open();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT ModulewijzerId, Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ModulewijzerId = reader.GetInt32(0);
+                        naam = reader.GetString(1);
+                        EC = Convert.ToString(reader.GetInt32(2));
+                        studiejaar = Convert.ToString(reader.GetInt32(3));
+                        periode = Convert.ToString(reader.GetInt32(4));
+                        werkvorm = reader.GetString(5);
+                        leeruitkomsten = reader.GetString(6);
+                        literatuur = reader.GetString(7);
+                        planning = reader.GetString(8);
+                        <tr>
+                            <td>@naam</td>
+                            <td>@EC</td>
+                            <td>@studiejaar</td>
+                            <td>@periode</td>
+                            <td><a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button">Openen</a></td>
+                        </tr>
+                    }
+                }
+
+            }
+            connection.Close();
+        }
+    </table>
+</div>
+
+<a href="~/Modulewijzer_toevoegen.cshtml" class="btn btn-success" role="button">Nieuwe modulewijzer</a>
