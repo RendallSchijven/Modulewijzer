@@ -5,7 +5,8 @@
     Layout = "_Layout.cshtml";
     Page.title = "Leraar toevoegen";
 
-    Validation.RequireField("Leraar", "Je moet minstens 1 leraar toevoegen");
+    Validation.RequireField("Voorletters", "Je moet voorletters toevoegen");
+    Validation.RequireField("Achternaam", "Je moet een achternaam toevoegen");
 
     if (IsPost && Validation.IsValid())
     {

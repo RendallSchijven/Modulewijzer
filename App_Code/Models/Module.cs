@@ -35,14 +35,29 @@ namespace Modulewijzer.Models
         public int Period { get; set; }
 
         /// <summary>
+        /// Gets or sets this module's method.
+        /// </summary>
+        public string Method { get; set; }
+
+        /// <summary>
+        /// Gets or sets this module's outcome.
+        /// </summary>
+        public string Outcomes { get; set; }
+
+        /// <summary>
+        /// Gets or sets this module's literature.
+        /// </summary>
+        public string Literature { get; set; }
+
+        /// <summary>
+        /// Gets or sets this module's schedule.
+        /// </summary>
+        public string Schedule { get; set; }
+
+        /// <summary>
         /// Gets a list of competences associated with this module.
         /// </summary>
         public List<Competence> Competences { get; } = new List<Competence>();
-
-        /// <summary>
-        /// Gets a list of methods associated with this module.
-        /// </summary>
-        public List<Method> Methods { get; } = new List<Method>();
 
         /// <summary>
         /// Gets a list of teachers associated with this module.
