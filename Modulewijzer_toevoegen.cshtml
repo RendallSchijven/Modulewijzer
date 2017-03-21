@@ -1,6 +1,6 @@
-﻿@{ 
-    //using Modulewijzer.Factories;
-    //using Modulewijzer.Models;
+﻿@using Modulewijzer.Models;
+@using Modulewijzer.Data;
+@{ 
 
     Layout = "_Layout.cshtml";
     Page.title = "Modulewijzer toevoegen";
@@ -12,16 +12,15 @@
 
     if (IsPost && Validation.IsValid())
     {
-        string Modulewijzer_naam = Request.Form["name"];
-        int EC = Convert.ToInt32(Request.Form["EC"]);
-        int Studiejaar = Convert.ToInt32(Request.Form["Studiejaar"]);
-        int Periode = Convert.ToInt32(Request.Form["Periode"]);
+        var module = new Module()
+        {
+            Name = Request.Form["name"],
+            NumberEcs = Convert.ToInt32(Request.Form["EC"]),
+            StudyYear = Convert.ToInt32(Request.Form["Studiejaar"]),
+            Period = Convert.ToInt32(Request.Form["Periode"])
+        };
 
-        var db = Database.Open("Modulewijzer");
-        string insertModule = "INSERT INTO Modulewijzer (Modulewijzer_naam, Aantal_EC, Studiejaar, Periode) VALUES (@0, @1, @2, @3)";
-        db.Execute(insertModule, Modulewijzer_naam, EC, Studiejaar, Periode);
-        db.Close();
-        //var module = ModuleFactory.GetModuleFromPostRequest(Request.Form);
+        DbModules.Instance.Modules.Create(module);
         Response.Redirect("Leraar_toevoegen");
     }
 }
