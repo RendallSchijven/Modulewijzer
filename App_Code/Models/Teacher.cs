@@ -3,6 +3,7 @@
     /// <summary>
     /// A model representing the `Teacher` table within the database.
     /// </summary>
+    
     public sealed class Teacher
     {
         /// <summary>
