@@ -1,0 +1,126 @@
+﻿@using System.Data;
+@using System.Data.SqlClient;
+@using Modulewijzer.Models;
+@using Modulewijzer.Data;
+@{
+    Layout = "_Layout.cshtml";
+    Page.title = "Modulewijzer";
+
+    Validation.RequireField("Naam", "Je moet een naam invoeren");
+    Validation.RequireField("EC", "Je moet een aantal EC`s invoeren");
+    Validation.RequireField("Studiejaar", "Je moet een studiejaar invoeren");
+    Validation.RequireField("Periode", "Je moet een periode invoeren");
+
+    int ModulewijzerId = 0;
+    string naam = "";
+    string EC = "";
+    string studiejaar = "";
+    string periode = "";
+    string werkvorm = "";
+    string leeruitkomsten = "";
+    string literatuur = "";
+    string planning = "";
+
+    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    {
+        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+        using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
+        {
+            connection.Open();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
+                command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
+                command.ExecuteNonQuery();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        naam = reader.GetString(0);
+                        EC = Convert.ToString(reader.GetInt32(1));
+                        studiejaar = Convert.ToString(reader.GetInt32(2));
+                        periode = Convert.ToString(reader.GetInt32(3));
+                        werkvorm = reader.GetString(4);
+                        leeruitkomsten = reader.GetString(5);
+                        literatuur = reader.GetString(6);
+                        planning = reader.GetString(7);
+                    }
+                }
+
+            }
+            connection.Close();
+        }
+    }
+
+    if (IsPost && Validation.IsValid())
+    {
+        var module = new Module()
+        {
+            Id = ModulewijzerId,
+            Name = Request.Form["Naam"],
+            NumberEcs = Convert.ToInt32(Request.Form["EC"]),
+            StudyYear = Convert.ToInt32(Request.Form["Studiejaar"]),
+            Period = Convert.ToInt32(Request.Form["Periode"]),
+            Method = Request.Form["Werkvorm"],
+            Outcomes = Request.Form["Leeruitkomsten"],
+            Literature = Request.Form["Literatuur"],
+            Schedule = Request.Form["Planning"]
+        };
+
+        DbModules.Instance.Modules.Update(module);
+        Response.Redirect("Default");
+    }
+}
+
+<div class="row">
+    <div class="col-md-5 portfolio-item">
+        <form class="form-horizontal" method="post">
+
+            <div class="form-group">
+                <label for="Naam">Naam modulewijzer<span style="color: red;">*@Html.ValidationMessage("Naam")</span></label>
+                <input class="form-control" type="text" id="Naam" name="Naam" placeholder="Naam modulewijzer" value="@naam">
+            </div>
+
+            <div class="form-group">
+                <label for="EC">Aantal EC`s<span style="color: red;">*@Html.ValidationMessage("EC")</span></label>
+                <input class="form-control" type="text" id="EC" name="EC" placeholder="Aantal EC`S" value="@EC">
+            </div>
+
+            <div class="form-group">
+                <label for="Studiejaar">Studiejaar<span style="color: red;">*@Html.ValidationMessage("Studiejaar")</span></label>
+                <input class="form-control" type="text" id="Studiejaar" name="Studiejaar" placeholder="Studiejaar" value="@studiejaar">
+            </div>
+
+            <div class="form-group">
+                <label for="Periode">Periode<span style="color: red;">*@Html.ValidationMessage("Periode")</span></label>
+                <input class="form-control" type="text" id="Periode" name="Periode" placeholder="Periode" value="@periode">
+            </div>
+
+            <div class="form-group">
+                <label for="Werkvorm">Werkvorm(en)</label>
+                <input class="form-control" type="text" id="Werkvorm" name="Werkvorm" placeholder="Hoorcollege, werkcollege" value="@werkvorm">
+            </div>
+
+            <div class="form-group">
+                <label for="Leeruitkomsten">Leeruitkomsten</label>
+                <input class="form-control" type="text" id="Leeruitkomsten" name="Leeruitkomsten" placeholder="Maximaal 5" value="@leeruitkomsten">
+            </div>
+
+            <div class="form-group">
+                <label for="Literatuur">Literatuur</label>
+                <input class="form-control" type="text" id="Literatuur" name="Literatuur" placeholder="Literatuur" value="@literatuur">
+            </div>
+
+            <div class="form-group">
+                <label for="Planning">Planning</label>
+                <input class="form-control" type="text" id="Planning" name="Planning" placeholder="Planning" value="@planning">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" name="Modulewijzer_edit" class="btn btn-primary" value="Modulewijzer_edit">Modulewijzer aanpassen</button>
+            </div>
+        </form>
+    </div>
+</div>

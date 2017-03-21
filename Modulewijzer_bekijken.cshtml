@@ -1,0 +1,88 @@
+﻿@using System.Data;
+@using System.Data.SqlClient;
+@using Modulewijzer.Models;
+@using Modulewijzer.Data;
+@{
+    Layout = "_Layout.cshtml";
+    Page.title = "Modulewijzer";
+
+    int ModulewijzerId = 0;
+    string naam = "";
+    string EC = "";
+    string studiejaar = "";
+    string periode = "";
+    string werkvorm = "";
+    string leeruitkomsten = "";
+    string literatuur = "";
+    string planning = "";
+
+    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    {
+        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+        using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
+        {
+            connection.Open();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
+                command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
+                command.ExecuteNonQuery();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        naam = reader.GetString(0);
+                        EC = Convert.ToString(reader.GetInt32(1));
+                        studiejaar = Convert.ToString(reader.GetInt32(2));
+                        periode = Convert.ToString(reader.GetInt32(3));
+                        werkvorm = reader.GetString(4);
+                        leeruitkomsten = reader.GetString(5);
+                        literatuur = reader.GetString(6);
+                        planning = reader.GetString(7);
+                    }
+                }
+
+            }
+            connection.Close();
+        }
+    }
+
+    if (!Request.Form["Modulewijzer_verwijderen"].IsEmpty())
+    {
+        //De modulewijzer verwijderen
+    }
+}
+
+<form method="post" id="Modulewijzer_verwijderen"></form>
+
+<div class="table-responsive">
+    <h2>Modules</h2>
+    <table class="table-bordered">
+        <tr>
+            <th>Naam</th>
+            <th>EC`s</th>
+            <th>Studiejaar</th>
+            <th>Periode</th>
+            <th>Werkvorm</th>
+            <th>Leeruitkomsten</th>
+            <th>Literatuur</th>
+            <th>Planning</th>
+        </tr>
+         <tr>
+            <td>@naam</td>
+            <td>@EC</td>
+            <td>@studiejaar</td>
+            <td>@periode</td>
+            <td>@werkvorm</td>
+            <td>@leeruitkomsten</td>
+            <td>@literatuur</td>
+            <td>@planning</td>
+        </tr>
+    </table>
+    <p><a href="Leraar_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button">Leraar toevoegen</a>
+    <a href="Modulewijzer_aanpassen?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button">Modulewijzer aanpassen</a>
+    <button type="submit" name="Modulewijzer_verwijderen" class="btn btn-danger" value="@ModulewijzerId" form="Modulewijzer_verwijderen">Modulewijzer verwijderen</button></p>
+    <a href="Default" class="btn btn-success" role="button">Terug</a>
+</div>
