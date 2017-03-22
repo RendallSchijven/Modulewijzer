@@ -1,7 +1,7 @@
 ﻿@using Modulewijzer.Models;
-@using Modulewijzer.Data;
+@using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
-@{  
+@{   
 
     Layout = "_Layout.cshtml";
     Page.title = "Modulewijzer toevoegen";
@@ -15,18 +15,18 @@
     {
         var module = new Module()
         {
-            Name = Request.Form["Naam"],
-            NumberEcs = Convert.ToInt32(Request.Form["EC"]),
-            StudyYear = Convert.ToInt32(Request.Form["Studiejaar"]),
-            Period = Convert.ToInt32(Request.Form["Periode"]),
-            Method = Request.Form["Werkvorm"],
-            Outcomes = Request.Form["Leeruitkomsten"],
-            Literature = Request.Form["Literatuur"],
-            Schedule = Request.Form["Planning"]
+            Naam = Request.Form["Naam"],
+            AantalEcs = Convert.ToInt32(Request.Form["EC"]),
+            StudieJaar = Convert.ToInt32(Request.Form["Studiejaar"]),
+            Periode = Convert.ToInt32(Request.Form["Periode"]),
+            Werkvorm = Request.Form["Werkvorm"],
+            Leeruitkomsten = Request.Form["Leeruitkomsten"],
+            Literatuur = Request.Form["Literatuur"],
+            Planning = Request.Form["Planning"]
         };
 
         DbModules.Instance.Modules.Create(module);
-        Response.Redirect("Leraar_toevoegen");
+        Response.Redirect("Default");
     }
 }
 
@@ -77,41 +77,6 @@
             <div class="form-group">
                 <button type="submit" name="Modulewijzer_create" class="btn btn-primary" value="Modulewijzer_create">Modulewijzer aanmaken</button>
             </div>
-        </form>
-    </div>
-
-    <div class="col-md-1 portfolio-item"></div>
-
-    <div class="col-md-5 portfolio-item">
-        <h3>Bestaande leraren toevoegen</h3>
-        <form class="form-horizontal" method="post">
-
-            <div class="form-group">
-                <label for="Leraar">Leraren</label><br>
-                @using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
-                {
-                    connection.Open();
-
-                    using (var command = connection.CreateCommand())
-                    {
-                        command.CommandText = "SELECT DocentId, Voorletters, Achternaam FROM Docenten";
-
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int id = reader.GetInt32(0);
-                                string Voorletters = reader.GetString(1);
-                                string Achternaam = reader.GetString(2);
-                                <div><input type="checkbox" id="Leraar" name="Leraar"> @Achternaam, @Voorletters</div>
-                            }
-                        }
-
-                    }
-                    connection.Close();
-                }
-            </div>
-            <a href="~/Leraar_toevoegen.cshtml" class="btn btn-success" role="button">Leraar aanmaken</a>
         </form>
     </div>
 </div>
