@@ -1,7 +1,7 @@
 ﻿@using System.Data;
 @using System.Data.SqlClient;
 @using Modulewijzer.Models;
-@using Modulewijzer.Data;
+@using Modulewijzer.DataAccess;
 @{
     Layout = "_Layout.cshtml";
     Page.title = "Modulewijzer";
@@ -51,7 +51,8 @@
 
     if (!Request.Form["Modulewijzer_verwijderen"].IsEmpty())
     {
-        //De modulewijzer verwijderen
+        DbConnection.Instance.Module.Delete(ModulewijzerId);
+        Response.Redirect("Default");
     }
 }
 
