@@ -25,7 +25,7 @@
             Planning = Request.Form["Planning"]
         };
 
-        DbModules.Instance.Modules.Create(module);
+        DbConnection.Instance.Module.Create(module);
         Response.Redirect("Default");
     }
 }

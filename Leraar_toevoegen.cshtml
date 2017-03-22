@@ -5,103 +5,53 @@
     Layout = "_Layout.cshtml";
     Page.title = "Leraar toevoegen";
 
-    Validation.RequireField("Voorletters", "Je moet voorletters toevoegen");
-    Validation.RequireField("Achternaam", "Je moet een achternaam toevoegen");
-
     int ModulewijzerId = 0;
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
-        //using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
-        //{
-        //    connection.Open();
-
-        //    using (var command = connection.CreateCommand())
-        //    {
-        //        command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
-        //        command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
-        //        command.ExecuteNonQuery();
-        //    }
-        //    connection.Close();
-        //}
     }
 
     if (IsPost && Validation.IsValid())
     {
-        var docent = new Docent()
-        {
-            Voorletters = Request.Form["Voorletters"],
-            Achternaam = Request.Form["Achternaam"],
-            Tussenvoegsel = Request.Form["Tussenvoegsel"]
-        };
-
-        DbModules.Instance.Docenten.Create(docent);
-
         //var moduledocent = new ModuleDocent()
         //{
         //    ModuleId = ModulewijzerId,
         //    TeacherId = Request.Form[]
         //};
-
-        Response.Redirect("Modulewijzer_toevoegen");
     }
 }
 
 <div class="row">
     <div class="col-md-5 portfolio-item">
-        <h3>Bestaande leraren toevoegen</h3>
         <form class="form-horizontal" method="post">
 
             <div class="form-group">
-                <label for="Leraar">Leraren</label><br>
                 @using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
                 {
                     connection.Open();
-
+                    string Tussenvoegsel = "";
                     using (var command = connection.CreateCommand())
                     {
-                        command.CommandText = "SELECT DocentId, Voorletters, Achternaam FROM Docenten";
+                        command.CommandText = "SELECT DocentId, Voorletters, Achternaam, Tussenvoegsel FROM Docenten";
 
                         using (var reader = command.ExecuteReader())
                         {
+                            <h3>Bestaande leraren toevoegen</h3>
                             while (reader.Read())
                             {
                                 int id = reader.GetInt32(0);
                                 string Voorletters = reader.GetString(1);
                                 string Achternaam = reader.GetString(2);
-                                <div><input type="checkbox" id="Leraar" name="Leraar"> @Achternaam, @Voorletters</div>
+                                Tussenvoegsel = reader.GetString(3);
+                                <div><p><input type="checkbox" id="Leraar" name="Leraar"> @Achternaam, @Tussenvoegsel, @Voorletters</p></div>
                             }
+                            <a href="Leraar_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button">Nieuwe leraar aanmaken</a>
                         }
 
                     }
                     connection.Close();
                 }
-            </div>
-            <a href="~/Leraar_toevoegen.cshtml" class="btn btn-success" role="button">Leraar aanmaken</a>
-        </form>
-    </div>
-    <div class="col-md-5 portfolio-item">
-        <h2>Nieuwe leraren toevoegen</h2>
-        <form class="form-horizontal" method="post">
-
-            <div class="form-group">
-                <label for="Voorletters">Voorletters<span style="color: red;">*@Html.ValidationMessage("Voorletters")</span></label><br>
-                <input type="text" id="Voorletters" name="Voorletters" placeholder="J.J">
-            </div>
-
-            <div class="form-group">
-                <label for="Achternaam">Achternaam<span style="color: red;">*@Html.ValidationMessage("Achternaam")</span></label><br>
-                <input type="text" id="Achternaam" name="Achternaam" placeholder="De Boer">
-            </div>
-
-            <div class="form-group">
-                <label for="Tussenvoegsel">Tussenvoegsel</label><br>
-                <input type="text" id="Tussenvoegsel" name="Tussenvoegsel" placeholder="van">
-            </div>
-
-            <div class="form-group">
-                <button type="submit" name="Leraar_add" class="btn btn-primary" value="Leraar_add">Leraar toevoegen</button>
             </div>
         </form>
     </div>

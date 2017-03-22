@@ -69,7 +69,7 @@
             Planning = Request.Form["Planning"]
         };
 
-        DbModules.Instance.Modules.Update(module);
+        DbConnection.Instance.Module.Update(module);
         Response.Redirect("Default");
     }
 }
