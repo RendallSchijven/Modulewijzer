@@ -1,5 +1,5 @@
 ﻿@using Modulewijzer.Models;
-@using Modulewijzer.Data;
+@using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
 @{   
     Layout = "_Layout.cshtml";
@@ -25,7 +25,7 @@
             <th>Studiejaar</th>
             <th>Periode</th>
         </tr>
-        @using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
+        @using (var connection = new SqlConnection(DbConnection.ConnectionString))
         {
             connection.Open();
 
@@ -60,6 +60,6 @@
             connection.Close();
         }
     </table>
+    <br>
+    <a href="~/Modulewijzer_toevoegen.cshtml" class="btn btn-primary" role="button">Nieuwe modulewijzer</a>
 </div>
-
-<a href="~/Modulewijzer_toevoegen.cshtml" class="btn btn-primary" role="button">Nieuwe modulewijzer</a>
