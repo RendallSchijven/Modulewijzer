@@ -1,7 +1,7 @@
 ﻿@using System.Data;
 @using System.Data.SqlClient;
 @using Modulewijzer.Models;
-@using Modulewijzer.Data;
+@using Modulewijzer.DataAccess;
 @{
     Layout = "_Layout.cshtml";
     Page.title = "Modulewijzer";
@@ -59,14 +59,14 @@
         var module = new Module()
         {
             Id = ModulewijzerId,
-            Name = Request.Form["Naam"],
-            NumberEcs = Convert.ToInt32(Request.Form["EC"]),
-            StudyYear = Convert.ToInt32(Request.Form["Studiejaar"]),
-            Period = Convert.ToInt32(Request.Form["Periode"]),
-            Method = Request.Form["Werkvorm"],
-            Outcomes = Request.Form["Leeruitkomsten"],
-            Literature = Request.Form["Literatuur"],
-            Schedule = Request.Form["Planning"]
+            Naam = Request.Form["Naam"],
+            AantalEcs = Convert.ToInt32(Request.Form["EC"]),
+            StudieJaar = Convert.ToInt32(Request.Form["Studiejaar"]),
+            Periode = Convert.ToInt32(Request.Form["Periode"]),
+            Werkvorm = Request.Form["Werkvorm"],
+            Leeruitkomsten = Request.Form["Leeruitkomsten"],
+            Literatuur = Request.Form["Literatuur"],
+            Planning = Request.Form["Planning"]
         };
 
         DbModules.Instance.Modules.Update(module);
