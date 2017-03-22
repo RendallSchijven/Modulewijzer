@@ -55,7 +55,7 @@ namespace Modulewijzer.DataAccess
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "UPDATE [Competenties] SET [Naam]=@Naam, [Niveau]=@Niveau, " +
-                        "[Competentie_beschrijving]=@Beschrijving WHERE [Id]=@Id";
+                        "[Competentie_beschrijving]=@Beschrijving WHERE [CompetentieId]=@Id";
 
                     command.Parameters.AddRange(new SqlParameter[]
                     {
@@ -83,7 +83,7 @@ namespace Modulewijzer.DataAccess
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "DELETE FROM [Competentie] WHERE [Id]=@Id";
+                    command.CommandText = "DELETE FROM [Competenties] WHERE [CompetentieId]=@Id";
                     command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = rowId });
                     command.ExecuteNonQuery();
                 }
