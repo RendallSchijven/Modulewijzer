@@ -1,0 +1,44 @@
+﻿@using Modulewijzer.Models;
+@using Modulewijzer.Data;
+@using System.Data.SqlClient;
+@{ 
+    Layout = "_Layout.cshtml";
+    Page.title = "Leraar toevoegen";
+
+    Validation.RequireField("Voorletters", "Je moet voorletters toevoegen");
+    Validation.RequireField("Achternaam", "Je moet een achternaam toevoegen");
+
+    if (IsPost && Validation.IsValid())
+    {
+        var docent = new Teacher()
+        {
+            Initials = Request.Form["Voorletters"],
+            LastName = Request.Form["Achternaam"]
+        };
+
+        DbModules.Instance.Teachers.Create(docent);
+        Response.Redirect("Modulewijzer_toevoegen");
+    }
+}
+
+<div class="row">
+    <div class="col-md-12 portfolio-item">
+        <h2>Nieuwe leraren toevoegen</h2>
+        <form class="form-horizontal" method="post">
+
+            <div class="form-group">
+                <label for="Voorletters">Voorletters<span style="color: red;">*@Html.ValidationMessage("Voorletters")</span></label><br>
+                <input type="text" id="Voorletters" name="Voorletters" placeholder="J.J">
+            </div>
+
+            <div class="form-group">
+                <label for="Achternaam">Achternaam<span style="color: red;">*@Html.ValidationMessage("Achternaam")</span></label><br>
+                <input type="text" id="Achternaam" name="Achternaam" placeholder="De Boer">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" name="Leraar_add" class="btn btn-primary" value="Leraar_add">Leraar toevoegen</button>
+            </div>
+        </form>
+    </div>
+</div>

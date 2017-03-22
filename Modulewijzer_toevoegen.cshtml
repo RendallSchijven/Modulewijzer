@@ -1,0 +1,117 @@
+﻿@using Modulewijzer.Models;
+@using Modulewijzer.Data;
+@using System.Data.SqlClient;
+@{  
+
+    Layout = "_Layout.cshtml";
+    Page.title = "Modulewijzer toevoegen";
+
+    Validation.RequireField("Naam", "Je moet een naam invoeren");
+    Validation.RequireField("EC", "Je moet een aantal EC`s invoeren");
+    Validation.RequireField("Studiejaar", "Je moet een studiejaar invoeren");
+    Validation.RequireField("Periode", "Je moet een periode invoeren");
+
+    if (IsPost && Validation.IsValid())
+    {
+        var module = new Module()
+        {
+            Name = Request.Form["Naam"],
+            NumberEcs = Convert.ToInt32(Request.Form["EC"]),
+            StudyYear = Convert.ToInt32(Request.Form["Studiejaar"]),
+            Period = Convert.ToInt32(Request.Form["Periode"]),
+            Method = Request.Form["Werkvorm"],
+            Outcomes = Request.Form["Leeruitkomsten"],
+            Literature = Request.Form["Literatuur"],
+            Schedule = Request.Form["Planning"]
+        };
+
+        DbModules.Instance.Modules.Create(module);
+        Response.Redirect("Leraar_toevoegen");
+    }
+}
+
+<div class="row">
+    <div class="col-md-5 portfolio-item">
+        <form class="form-horizontal" method="post">
+
+            <div class="form-group">
+                <label for="Naam">Naam modulewijzer<span style="color: red;">*@Html.ValidationMessage("Naam")</span></label>
+                <input class="form-control" type="text" id="Naam" name="Naam" placeholder="Naam modulewijzer">
+            </div>
+
+            <div class="form-group">
+                <label for="EC">Aantal EC`s<span style="color: red;">*@Html.ValidationMessage("EC")</span></label>
+                <input class="form-control" type="text" id="EC" name="EC" placeholder="Aantal EC`S">
+            </div>
+
+            <div class="form-group">
+                <label for="Studiejaar">Studiejaar<span style="color: red;">*@Html.ValidationMessage("Studiejaar")</span></label>
+                <input class="form-control" type="text" id="Studiejaar" name="Studiejaar" placeholder="Studiejaar">
+            </div>
+
+            <div class="form-group">
+                <label for="Periode">Periode<span style="color: red;">*@Html.ValidationMessage("Periode")</span></label>
+                <input class="form-control" type="text" id="Periode" name="Periode" placeholder="Periode">
+            </div>
+
+            <div class="form-group">
+                <label for="Werkvorm">Werkvorm(en)</label>
+                <input class="form-control" type="text" id="Werkvorm" name="Werkvorm" placeholder="Hoorcollege, werkcollege">
+            </div>
+
+            <div class="form-group">
+                <label for="Leeruitkomsten">Leeruitkomsten</label>
+                <input class="form-control" type="text" id="Leeruitkomsten" name="Leeruitkomsten" placeholder="Maximaal 5">
+            </div>
+
+            <div class="form-group">
+                <label for="Literatuur">Literatuur</label>
+                <input class="form-control" type="text" id="Literatuur" name="Literatuur" placeholder="Literatuur">
+            </div>
+
+            <div class="form-group">
+                <label for="Planning">Planning</label>
+                <input class="form-control" type="text" id="Planning" name="Planning" placeholder="Planning">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" name="Modulewijzer_create" class="btn btn-primary" value="Modulewijzer_create">Modulewijzer aanmaken</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-1 portfolio-item"></div>
+
+    <div class="col-md-5 portfolio-item">
+        <h3>Bestaande leraren toevoegen</h3>
+        <form class="form-horizontal" method="post">
+
+            <div class="form-group">
+                <label for="Leraar">Leraren</label><br>
+                @using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
+                {
+                    connection.Open();
+
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT DocentId, Voorletters, Achternaam FROM Docenten";
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int id = reader.GetInt32(0);
+                                string Voorletters = reader.GetString(1);
+                                string Achternaam = reader.GetString(2);
+                                <div><input type="checkbox" id="Leraar" name="Leraar"> @Achternaam, @Voorletters</div>
+                            }
+                        }
+
+                    }
+                    connection.Close();
+                }
+            </div>
+            <a href="~/Leraar_toevoegen.cshtml" class="btn btn-success" role="button">Leraar aanmaken</a>
+        </form>
+    </div>
+</div>
