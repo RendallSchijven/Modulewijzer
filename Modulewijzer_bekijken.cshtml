@@ -58,31 +58,21 @@
 <form method="post" id="Modulewijzer_verwijderen"></form>
 
 <div class="table-responsive">
-    <h2>Modules</h2>
-    <table class="table-bordered">
-        <tr>
-            <th>Naam</th>
-            <th>EC`s</th>
-            <th>Studiejaar</th>
-            <th>Periode</th>
-            <th>Werkvorm</th>
-            <th>Leeruitkomsten</th>
-            <th>Literatuur</th>
-            <th>Planning</th>
-        </tr>
-         <tr>
-            <td>@naam</td>
-            <td>@EC</td>
-            <td>@studiejaar</td>
-            <td>@periode</td>
-            <td>@werkvorm</td>
-            <td>@leeruitkomsten</td>
-            <td>@literatuur</td>
-            <td>@planning</td>
-        </tr>
-    </table>
-    <p><a href="Leraar_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button">Leraar toevoegen</a>
-    <a href="Modulewijzer_aanpassen?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button">Modulewijzer aanpassen</a>
-    <button type="submit" name="Modulewijzer_verwijderen" class="btn btn-danger" value="@ModulewijzerId" form="Modulewijzer_verwijderen">Modulewijzer verwijderen</button></p>
-    <a href="Default" class="btn btn-success" role="button">Terug</a>
+    <h2>Module "@naam"</h2>
+    <b>Naam</b><br /><p>@naam</p>
+    <b>EC's</b><br /><p>@EC</p>
+    <b>Studiejaar</b><br /><p>@studiejaar</p>
+    <b>Periode</b><br /><p>@periode</p>
+    <b>Werkvorm</b><br /><p>@werkvorm</p>
+    <b>Leeruitkomsten</b><br /><p>@leeruitkomsten</p>
+    <b>Literatuur</b><br /><p>@literatuur</p>
+    <b>Planning</b><br /><p>@planning</p>
+    <hr />
+    <a href="Default" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+    <a href="Print_modulewijzer.cshtml?ModulewijzerId=@ModulewijzerId" class="btn btn-primary"><i class="fa fa-print" aria-hidden="true"></i> Print</a>
+    <div style="float:right;">
+        <p><a href="Leraar_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i> Leraar toevoegen</a>
+        <a href="Modulewijzer_aanpassen?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-pencil" aria-hidden="true"></i> Module aanpassen</a>
+        <button type="submit" name="Modulewijzer_verwijderen" class="btn btn-danger" value="@ModulewijzerId" form="Modulewijzer_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Module verwijderen</button></p>
+    </div>
 </div>
