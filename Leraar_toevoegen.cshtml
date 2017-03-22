@@ -1,58 +1,84 @@
 ﻿@using Modulewijzer.Models;
 @using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
-@{ 
+@{
     Layout = "_Layout.cshtml";
     Page.title = "Leraar toevoegen";
 
     int ModulewijzerId = 0;
+    int docentId = 0;
+    string Voorletters = "";
+    string Achternaam = "";
+    string Tussenvoegsel = "";
+
+    using (var connection = new SqlConnection(DbConnection.ConnectionString))
+    {
+        connection.Open();
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = "SELECT DocentId, Voorletters, Achternaam, Tussenvoegsel FROM Docenten";
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    docentId = reader.GetInt32(0);
+                    Voorletters = reader.GetString(1);
+                    Achternaam = reader.GetString(2);
+                    Tussenvoegsel = reader.GetString(3);
+
+                }
+            }
+
+        }
+        connection.Close();
+    }
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
     }
 
-    if (IsPost && Validation.IsValid())
+    if (!Request.Form["Leraar_toevoegen"].IsEmpty())
     {
-        //var moduledocent = new ModuleDocent()
-        //{
-        //    ModuleId = ModulewijzerId,
-        //    TeacherId = Request.Form[]
-        //};
+        //Code om leraar te assignen aan een module
+    }
+
+    if (!Request.Form["Leraar_verwijderen"].IsEmpty())
+    {
+        //Code om leraar te unassignen aan een module
     }
 }
 
-<div class="row">
-    <div class="col-md-5 portfolio-item">
-        <form class="form-horizontal" method="post">
+<form method="post" id="Leraar_toevoegen"></form>
+<form method="post" id="Leraar_verwijderen"></form>
 
-            <div class="form-group">
-                @using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
-                {
-                    connection.Open();
-                    string Tussenvoegsel = "";
-                    using (var command = connection.CreateCommand())
-                    {
-                        command.CommandText = "SELECT DocentId, Voorletters, Achternaam, Tussenvoegsel FROM Docenten";
-
-                        using (var reader = command.ExecuteReader())
-                        {
-                            <h3>Bestaande leraren toevoegen</h3>
-                            while (reader.Read())
-                            {
-                                int id = reader.GetInt32(0);
-                                string Voorletters = reader.GetString(1);
-                                string Achternaam = reader.GetString(2);
-                                Tussenvoegsel = reader.GetString(3);
-                                <div><p><input type="checkbox" id="Leraar" name="Leraar"> @Achternaam, @Tussenvoegsel, @Voorletters</p></div>
-                            }
-                            <a href="Leraar_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button">Nieuwe leraar aanmaken</a>
-                        }
-
-                    }
-                    connection.Close();
-                }
-            </div>
-        </form>
-    </div>
+<div class="table-responsive">
+    <h3>Leraren aan modulewijzer toevoegen</h3>
+    <table class="table-bordered">
+        <tr>
+            <th>Achternaam</th>
+            <th>Voorletters</th>
+            <th>Tussenvoegsel</th>
+            <th></th>
+        </tr>
+        @*
+            Hier komt code om de staat van de toevoegen/verwijderen button te veranderen
+            @{ 
+            string klasse = "";
+            string tekst = "";
+            
+        }*@
+        <tr>
+            <td>@Achternaam</td>
+            <td>@Voorletters</td>
+            <td>@Tussenvoegsel</td>
+            <td><button type="submit" class="btn btn-success" value="@docentId" form="Leraar_toevoegen">Toevoegen</button></td>
+        </tr>
+    </table>
+    <br>
+    <p>
+        <a href="Leraar_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button">Nieuwe leraar aanmaken</a>
+    </p>
+    <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button">Terug</a>
 </div>

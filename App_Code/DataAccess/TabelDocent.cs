@@ -26,7 +26,8 @@ namespace Modulewijzer.DataAccess
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "INSERT INTO [Docenten] ([Voorletters], [Achternaam], " +
-                        "[Tussenvoegel] VALUES(@Voorletters, @Achternaam, @Tussenvoegsel)";
+                        "[Tussenvoegel]) VALUES(@Voorletters, @Achternaam, " +
+                        "@Tussenvoegsel)";
 
                     command.Parameters.Add(new SqlParameter[]
                     {
