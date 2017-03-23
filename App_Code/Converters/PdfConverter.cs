@@ -28,7 +28,7 @@ namespace Modulewijzer.Converters
             m_doc.Add(new Paragraph("Studiewijzer", _bigheader));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Naam", _smallheader));
-            m_doc.Add(new Paragraph(module.Name));
+            m_doc.Add(new Paragraph(module.Naam));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Docenten", _smallheader));
             string s = "";
@@ -43,19 +43,19 @@ namespace Modulewijzer.Converters
             m_doc.Add(new Paragraph(DateTime.Now.Year.ToString()));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("EC's", _smallheader));
-            m_doc.Add(new Paragraph(module.NumberEcs.ToString()));
+            m_doc.Add(new Paragraph(module.AantalEcs.ToString()));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Studiejaar en periode", _smallheader));
-            m_doc.Add(new Paragraph(String.Format("Jaar {0} periode {1}", module.StudyYear, module.Period)));
+            m_doc.Add(new Paragraph(String.Format("Jaar {0} periode {1}", module.StudieJaar, module.Periode)));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Leeruitkomsten", _smallheader));
-            m_doc.Add(new Paragraph(module.Outcomes));
+            m_doc.Add(new Paragraph(module.Leeruitkomsten));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Competenties", _smallheader));
             // Competenties hier
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Literatuur", _smallheader));
-            m_doc.Add(new Paragraph(module.Literature));
+            m_doc.Add(new Paragraph(module.Literatuur));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Planning", _smallheader));
             // Planning
