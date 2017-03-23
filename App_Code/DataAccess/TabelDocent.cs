@@ -101,16 +101,5 @@ namespace Modulewijzer.DataAccess
         {
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Gets all docents in the database.
-        /// </summary>
-        /// <returns>A collection of all docents in the database.</returns>
-        public Docent[] GetAll()
-        {
-            var result = new List<Docent>();
-
-            return result.ToArray();
-        }
     }
 }

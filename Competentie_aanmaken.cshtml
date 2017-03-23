@@ -6,7 +6,7 @@
     Page.title = "Competentie aanmaken";
 
     Validation.RequireField("Naam", "Je moet naam toevoegen");
-    //Validation.RequireField("Niveau", "Je moet een competentie toevoegen");
+    Validation.RequireField("Niveau", "Je moet een niveau toevoegen");
     Validation.RequireField("Beschrijving", "Je moet een beschrijving toevoegen");
 
     int ModulewijzerId = 0;
@@ -27,7 +27,8 @@
 
         DbConnection.Instance.Competentie.Create(competentie);
 
-        Response.Redirect("Default");
+
+        Response.Redirect($"Competentie_toevoegen?ModulewijzerId={ModulewijzerId}");
     }
 }
 

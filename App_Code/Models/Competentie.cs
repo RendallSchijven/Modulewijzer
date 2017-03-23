@@ -1,5 +1,4 @@
-﻿
-namespace Modulewijzer.Models
+﻿namespace Modulewijzer.Models
 {
     /// <summary>
     /// Represents the `Competentie` table within the database.
