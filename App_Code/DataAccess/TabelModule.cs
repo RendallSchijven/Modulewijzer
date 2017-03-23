@@ -114,55 +114,7 @@ namespace Modulewijzer.DataAccess
         /// <returns></returns>
         public Module GetById(int id)
         {
-            string naam = "";
-            int EC = -1;
-            int studiejaar = -1;
-            int periode = -1;
-            string werkvorm = "";
-            string leeruitkomsten = "";
-            string literatuur = "";
-            string planning = "";
-
-            using (var connection = new SqlConnection(DbConnection.ConnectionString))
-            {
-                connection.Open();
-
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
-                    command.Parameters.AddWithValue("@ModulewijzerId", id);
-                    command.ExecuteNonQuery();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            naam = reader.GetString(0);
-                            EC = reader.GetInt32(1);
-                            studiejaar = reader.GetInt32(2);
-                            periode = reader.GetInt32(3);
-                            werkvorm = reader.GetString(4);
-                            leeruitkomsten = reader.GetString(5);
-                            literatuur = reader.GetString(6);
-                            planning = reader.GetString(7);
-                        }
-                    }
-
-                }
-                connection.Close();
-            }
-            Module module = new Module()
-            {
-                Naam = naam,
-                AantalEcs = EC,
-                StudieJaar = studiejaar,
-                Periode = periode,
-                Werkvorm = werkvorm,
-                Leeruitkomsten = leeruitkomsten,
-                Literatuur = literatuur,
-                Planning = planning
-            };
-            return module;
+            throw new NotImplementedException();
         }
 
         /// <summary>
