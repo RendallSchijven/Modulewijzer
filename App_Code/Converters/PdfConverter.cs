@@ -18,7 +18,7 @@ namespace Modulewijzer.Converters
 
         public PdfConverter(string fileName)
         {
-            m_stream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+            m_stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
             m_writer = PdfWriter.GetInstance(m_doc, m_stream);
             m_doc.Open();
 
