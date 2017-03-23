@@ -34,8 +34,10 @@
 
 <div class="row">
     <div class="col-md-5 portfolio-item">
-        <h2>Nieuwe competentie toevoegen</h2>
         <form class="form-horizontal" method="post">
+            <div class="form-group">
+                <h3>Nieuwe competentie aanmaken</h3>
+            </div>
 
             <div class="form-group">
                 <label for="Naam">Naam<span style="color: red;">*@Html.ValidationMessage("Naam")</span></label><br>
@@ -63,7 +65,8 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" name="Competentie_toevoegen" class="btn btn-primary" value="Competentie_toevoegen">Competentie toevoegen</button>
+                <a href="Competentie_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                <button type="submit" name="Competentie_aanmaken" class="btn btn-primary" value="Competentie_toevoegen"><i class="fa fa-plus-square" aria-hidden="true"></i> Competentie aanmaken</button>
             </div>
         </form>
     </div>

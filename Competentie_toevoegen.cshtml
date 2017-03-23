@@ -114,31 +114,29 @@
 
                                 //result = (int)command.ExecuteScalar();
                             }
-                        <tr>
-                            <td>@Naam</td>
-                            <td>@Niveau</td>
-                            <td>@Competentie_beschrijving</td>
-                            @switch (result)
+                            <tr>
+                                <td>@Naam</td>
+                                <td>@Niveau</td>
+                                <td>@Competentie_beschrijving</td>
+                                @switch (result)
                             {
                                 case 0:
-                                    <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>;
+                                        <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>;
                                     break;
                                 case 1:
-                                    <td><button type="submit" class="btn btn-danger" value="@CompetentieId" form="Competentie_verwijderen">Verwijderen</button></td>
-                                    break;
-                            }
-                        </tr>
-                            }
+                                        <td><button type="submit" class="btn btn-danger" value="@CompetentieId" form="Competentie_verwijderen">Verwijderen</button></td>
+                                        break;
+                                }
+                            </tr>
                         }
-
                     }
-                    connection.Close();
+
                 }
+                connection.Close();
             }
+        }
     </table>
-    <br>
-    <p>
-        <a href="Competentie_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button">Nieuwe competentie aanmaken</a>
-    </p>
-    <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button">Terug</a>
+    <br />
+    <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>  Terug</a>
+    <a href="Competentie_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-plus-square" aria-hidden="true"></i>  Nieuwe competentie aanmaken</a>
 </div>
