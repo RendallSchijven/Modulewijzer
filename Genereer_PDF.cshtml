@@ -62,7 +62,7 @@
         };
         #endregion
         // Verander hier even Benjamin naar je eigen gebruikersnaam als je het wilt uittesten
-        using (var pdfConverter = new PdfConverter(@"C:\Users\Benjamin\Documents\Modulewijzer\PDF\Module" + ModulewijzerId + ".pdf"))
+        using (var pdfConverter = new PdfConverter(@"C:\Users\%USERNAME%\Documents\Modulewijzer\PDF\Module" + ModulewijzerId + ".pdf"))
         {
             pdfConverter.AddModule(module);
         }
