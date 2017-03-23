@@ -13,8 +13,6 @@
     string literatuur = "";
     string planning = "";
 
-    bool pdf_available = false;
-
     // Script zet nu eerst DB om naar Module
 
     int ModulewijzerId;
@@ -64,11 +62,11 @@
         };
         #endregion
         // Verander hier even Benjamin naar je eigen gebruikersnaam als je het wilt uittesten
-        using (var pdfConverter = new PdfConverter(@"C:\Users\Benjamin\Documents\Modulewijzer\PDFjes\Module" + ModulewijzerId + ".pdf"))
+        using (var pdfConverter = new PdfConverter(@"C:\Users\Benjamin\Documents\Modulewijzer\PDF\Module" + ModulewijzerId + ".pdf"))
         {
             pdfConverter.AddModule(module);
         }
-        Response.Redirect("PDFjes/Module" + ModulewijzerId + ".pdf");
+        Response.Redirect("PDF/Module" + ModulewijzerId + ".pdf");
     }
 
 }
