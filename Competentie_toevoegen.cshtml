@@ -1,10 +1,13 @@
 ﻿@using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
-@using Modulewijzer.Models;
+@using System;
+@using System.Data;
+@using System.Data.SqlClient;
 @{
     Layout = "_Layout.cshtml";
     Page.title = "Competenties toevoegen";
 
+    int result = 0;
     int ModulewijzerId = 0;
     int CompetentieId = 0;
     string Naam = "";
@@ -18,12 +21,44 @@
 
     if (!Request.Form["Competentie_toevoegen"].IsEmpty())
     {
-        //Code om competentie te assignen aan een module
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "EXEC LinkCompetentie @ModulewijzerId @CompetentieId";
+
+                command.Parameters.AddRange(new SqlParameter[]
+                {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@Competentie", SqlDbType.Int) { Value = CompetentieId },
+                });
+
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
     }
 
     if (!Request.Form["Competentie_verwijderen"].IsEmpty())
     {
-        //Code om competentie te unassignen aan een module
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "EXEC DropLinkCompetentie @ModulewijzerId @CompetentieId";
+
+                command.Parameters.AddRange(new SqlParameter[]
+                {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@Competentie", SqlDbType.Int) { Value = CompetentieId },
+                });
+
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
     }
 }
 
@@ -39,33 +74,67 @@
             <th>Beschrijving</th>
             <th></th>
         </tr>
-        @using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
-            using (var command = connection.CreateCommand())
+        @{using (var connection = new SqlConnection(DbConnection.ConnectionString))
             {
-                command.CommandText = "SELECT CompetentieId, Naam, Niveau, Competentie_beschrijving FROM Competenties";
-
-                using (var reader = command.ExecuteReader())
+                using (var command = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    connection.Open();
+
+                    command.CommandText = "EXEC GetCompetenties @ModuleId";
+                    command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = ModulewijzerId });
+
+
+                    using (var reader = command.ExecuteReader())
                     {
-                        CompetentieId = reader.GetInt32(0);
-                        Naam = reader.GetString(1);
-                        Niveau = reader.GetInt32(2);
-                        Competentie_beschrijving = reader.GetString(3);
+                        while (reader.Read())
+                        {
+                            CompetentieId = reader.GetInt32(0);
+                            Naam = reader.GetString(1);
+                            Niveau = reader.GetInt32(2);
+                            Competentie_beschrijving = reader.GetString(3);
+
+                            //if (reader.IsDBNull(4))
+                            //{
+                            //    result = 0;
+                            //}
+                            //else
+                            //{
+                            //    result = 1;
+                            //}
+
+                            using (var checkLink = connection.CreateCommand())
+                            {
+                                checkLink.CommandText = "EXEC IsCompetentieLinked @ModulewijzerId @CompetentieId";
+
+                                checkLink.Parameters.AddRange(new SqlParameter[]
+                                {
+                                    new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                                     new SqlParameter("@Competentie", SqlDbType.Int) { Value = CompetentieId },
+                                });
+
+                                //result = (int)command.ExecuteScalar();
+                            }
                         <tr>
                             <td>@Naam</td>
                             <td>@Niveau</td>
                             <td>@Competentie_beschrijving</td>
-                            <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>
+                            @switch (result)
+                            {
+                                case 0:
+                                    <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>;
+                                    break;
+                                case 1:
+                                    <td><button type="submit" class="btn btn-danger" value="@CompetentieId" form="Competentie_verwijderen">Verwijderen</button></td>
+                                    break;
+                            }
                         </tr>
-                    }
-                }
+                            }
+                        }
 
+                    }
+                    connection.Close();
+                }
             }
-            connection.Close();
-        }
     </table>
     <br>
     <p>

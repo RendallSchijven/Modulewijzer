@@ -70,7 +70,7 @@
         };
 
         DbConnection.Instance.Module.Update(module);
-        Response.Redirect("Default");
+        Response.Redirect($"Modulewijzer_bekijken?ModulewijzerId={ModulewijzerId}");
     }
 }
 

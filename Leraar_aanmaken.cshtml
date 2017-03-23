@@ -26,7 +26,7 @@
 
         DbConnection.Instance.Docenten.Create(docent);
 
-        Response.Redirect("Default");
+        Response.Redirect($"Leraar_toevoegen?ModulewijzerId={ModulewijzerId}");
     }
 }
 

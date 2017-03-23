@@ -101,16 +101,5 @@ namespace Modulewijzer.DataAccess
         {
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Gets all competenties in the database.
-        /// </summary>
-        /// <returns>A collection of all competenties in the database.</returns>
-        public Competentie[] GetAll()
-        {
-            var result = new List<Competentie>();
-
-            return result.ToArray();
-        }
     }
 }
