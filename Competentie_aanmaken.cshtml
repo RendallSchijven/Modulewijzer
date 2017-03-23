@@ -21,7 +21,7 @@
         var competentie = new Competentie()
         {
             Naam = Request.Form["Naam"],
-            Niveau = 1,
+            Niveau = Convert.ToInt32(Request.Form["Niveau"]),
             Beschrijving = Request.Form["Beschrijving"]
         };
 
@@ -43,13 +43,13 @@
                     <option value="Analyseren">Analyseren</option>
                     <option value="Adviseren">Adviseren</option>
                     <option value="Ontwerpen">Ontwerpen</option>
-                    <option value="Realiseren">Beheren</option>
+                    <option value="Realiseren">Realiseren</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="Niveau">Niveau<span style="color: red;">*@Html.ValidationMessage("Niveau")</span></label><br>
-                <select id="Naam" name="Naam">
+                <select id="Niveau" name="Niveau">
                     <option value=1>1</option>
                     <option value=2>2</option>
                     <option value=3>3</option>

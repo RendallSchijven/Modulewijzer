@@ -11,29 +11,6 @@
     int Niveau = 0;
     string Competentie_beschrijving = "";
 
-    using (var connection = new SqlConnection(DbConnection.ConnectionString))
-    {
-        connection.Open();
-        using (var command = connection.CreateCommand())
-        {
-            command.CommandText = "SELECT CompetentieId, Naam, Niveau, Competentie_beschrijving FROM Competenties";
-
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    CompetentieId = reader.GetInt32(0);
-                    Naam = reader.GetString(1);
-                    Niveau = reader.GetInt32(2);
-                    Competentie_beschrijving = reader.GetString(3);
-
-                }
-            }
-
-        }
-        connection.Close();
-    }
-
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
@@ -62,19 +39,33 @@
             <th>Beschrijving</th>
             <th></th>
         </tr>
-        @*
-                Hier komt code om de staat van de toevoegen/verwijderen button te veranderen
-                @{
-                string klasse = "";
-                string tekst = "";
+        @using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT CompetentieId, Naam, Niveau, Competentie_beschrijving FROM Competenties";
 
-            }*@
-        <tr>
-            <td>@Naam</td>
-            <td>@Niveau</td>
-            <td>@Competentie_beschrijving</td>
-            <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>
-        </tr>
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        CompetentieId = reader.GetInt32(0);
+                        Naam = reader.GetString(1);
+                        Niveau = reader.GetInt32(2);
+                        Competentie_beschrijving = reader.GetString(3);
+                        <tr>
+                            <td>@Naam</td>
+                            <td>@Niveau</td>
+                            <td>@Competentie_beschrijving</td>
+                            <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>
+                        </tr>
+                    }
+                }
+
+            }
+            connection.Close();
+        }
     </table>
     <br>
     <p>
