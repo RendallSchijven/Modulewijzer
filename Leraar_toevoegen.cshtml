@@ -37,7 +37,6 @@
             <th>Achternaam</th>
             <th>Voorletters</th>
             <th>Tussenvoegsel</th>
-            <th></th>
         </tr>
         @using (var connection = new SqlConnection(DbConnection.ConnectionString))
         {
@@ -58,7 +57,7 @@
                             <td>@Achternaam</td>
                             <td>@Voorletters</td>
                             <td>@Tussenvoegsel</td>
-                            <td><button type="submit" class="btn btn-success" value="@docentId" form="Leraar_toevoegen">Toevoegen</button></td>
+                            <td><button type="submit" class="btn btn-success" value="@docentId" form="Leraar_toevoegen"><i class="fa fa-plus" aria-hidden="true"></i> Toevoegen</button></td>
                         </tr>
                     }
                 }
@@ -67,9 +66,7 @@
             connection.Close();
         }
     </table>
-    <br>
-    <p>
-        <a href="Leraar_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button">Nieuwe leraar aanmaken</a>
-    </p>
-    <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button">Terug</a>
+    <br />
+    <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+    <a href="Leraar_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i>  Nieuwe leraar aanmaken</a>
 </div>
