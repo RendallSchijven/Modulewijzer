@@ -11,29 +11,6 @@
     string Achternaam = "";
     string Tussenvoegsel = "";
 
-    using (var connection = new SqlConnection(DbConnection.ConnectionString))
-    {
-        connection.Open();
-        using (var command = connection.CreateCommand())
-        {
-            command.CommandText = "SELECT DocentId, Voorletters, Achternaam, Tussenvoegsel FROM Docenten";
-
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    docentId = reader.GetInt32(0);
-                    Voorletters = reader.GetString(1);
-                    Achternaam = reader.GetString(2);
-                    Tussenvoegsel = reader.GetString(3);
-
-                }
-            }
-
-        }
-        connection.Close();
-    }
-
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
@@ -61,19 +38,33 @@
             <th>Voorletters</th>
             <th>Tussenvoegsel</th>
         </tr>
-        @*
-            Hier komt code om de staat van de toevoegen/verwijderen button te veranderen
-            @{ 
-            string klasse = "";
-            string tekst = "";
-            
-        }*@
-        <tr>
-            <td>@Achternaam</td>
-            <td>@Voorletters</td>
-            <td>@Tussenvoegsel</td>
-            <td><button type="submit" class="btn btn-success" value="@docentId" form="Leraar_toevoegen"><i class="fa fa-plus" aria-hidden="true"></i> Toevoegen</button></td>
-        </tr>
+        @using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT DocentId, Voorletters, Achternaam, Tussenvoegsel FROM Docenten";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        docentId = reader.GetInt32(0);
+                        Voorletters = reader.GetString(1);
+                        Achternaam = reader.GetString(2);
+                        Tussenvoegsel = reader.GetString(3);
+                        <tr>
+                            <td>@Achternaam</td>
+                            <td>@Voorletters</td>
+                            <td>@Tussenvoegsel</td>
+                            <td><button type="submit" class="btn btn-success" value="@docentId" form="Leraar_toevoegen"><i class="fa fa-plus" aria-hidden="true"></i>  Toevoegen</button></td>
+                        </tr>
+                    }
+                }
+
+            }
+            connection.Close();
+        }
     </table>
     <br />
     <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>

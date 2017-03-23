@@ -25,11 +25,10 @@ namespace Modulewijzer.DataAccess
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "INSERT INTO [Docenten] ([Voorletters], [Achternaam], " +
-                        "[Tussenvoegel]) VALUES(@Voorletters, @Achternaam, " +
-                        "@Tussenvoegsel)";
+                    command.CommandText = "INSERT INTO [Docenten] ([Voorletters], [Achternaam], [Tussenvoegsel])" +
+                        "VALUES(@Voorletters, @Achternaam, @Tussenvoegsel)";
 
-                    command.Parameters.Add(new SqlParameter[]
+                    command.Parameters.AddRange(new SqlParameter[]
                     {
                         new SqlParameter("@Voorletters", SqlDbType.NVarChar) { Value = row.Voorletters },
                         new SqlParameter("@Achternaam", SqlDbType.NVarChar) { Value = row.Achternaam },
