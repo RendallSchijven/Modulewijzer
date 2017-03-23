@@ -1,4 +1,84 @@
-﻿@{ 
+﻿@using Modulewijzer.DataAccess;
+@using System.Data.SqlClient;
+@using Modulewijzer.Models;
+@{
     Layout = "_Layout.cshtml";
     Page.title = "Competenties toevoegen";
+
+    int ModulewijzerId = 0;
+    int CompetentieId = 0;
+    string Naam = "";
+    int Niveau = 0;
+    string Competentie_beschrijving = "";
+
+    using (var connection = new SqlConnection(DbConnection.ConnectionString))
+    {
+        connection.Open();
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = "SELECT CompetentieId, Naam, Niveau, Competentie_beschrijving FROM Competenties";
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    CompetentieId = reader.GetInt32(0);
+                    Naam = reader.GetString(1);
+                    Niveau = reader.GetInt32(2);
+                    Competentie_beschrijving = reader.GetString(3);
+
+                }
+            }
+
+        }
+        connection.Close();
+    }
+
+    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    {
+        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+    }
+
+    if (!Request.Form["Competentie_toevoegen"].IsEmpty())
+    {
+        //Code om competentie te assignen aan een module
+    }
+
+    if (!Request.Form["Competentie_verwijderen"].IsEmpty())
+    {
+        //Code om competentie te unassignen aan een module
+    }
 }
+
+<form method="post" id="Competentie_toevoegen"></form>
+<form method="post" id="Competentie_verwijderen"></form>
+
+<div class="table-responsive">
+    <h3>Competenties</h3>
+    <table class="table-bordered">
+        <tr>
+            <th>Naam</th>
+            <th>Niveau</th>
+            <th>Beschrijving</th>
+            <th></th>
+        </tr>
+        @*
+                Hier komt code om de staat van de toevoegen/verwijderen button te veranderen
+                @{
+                string klasse = "";
+                string tekst = "";
+
+            }*@
+        <tr>
+            <td>@Naam</td>
+            <td>@Niveau</td>
+            <td>@Competentie_beschrijving</td>
+            <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>
+        </tr>
+    </table>
+    <br>
+    <p>
+        <a href="Competentie_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button">Nieuwe competentie aanmaken</a>
+    </p>
+    <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button">Terug</a>
+</div>

@@ -19,7 +19,7 @@
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
-        using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
         {
             connection.Open();
 

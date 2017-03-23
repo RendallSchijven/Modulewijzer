@@ -24,7 +24,7 @@
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
-        using (var connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Modulewijzer.mdf;Integrated Security=True"))
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
         {
             connection.Open();
 
@@ -69,7 +69,7 @@
             Planning = Request.Form["Planning"]
         };
 
-        DbModules.Instance.Modules.Update(module);
+        DbConnection.Instance.Module.Update(module);
         Response.Redirect("Default");
     }
 }
@@ -120,6 +120,7 @@
 
             <div class="form-group">
                 <button type="submit" name="Modulewijzer_edit" class="btn btn-primary" value="Modulewijzer_edit">Modulewijzer aanpassen</button>
+                <br /><br /><p><a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button">Terug</a></p>
             </div>
         </form>
     </div>
