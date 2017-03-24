@@ -92,6 +92,37 @@ namespace Modulewijzer.DataAccess
             }
         }
 
+        public int GetLink(int DocentId, int ModuleId)
+        {
+            int result = 0;
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+
+                using (var checkLink = connection.CreateCommand())
+                {
+                    checkLink.CommandText = "EXEC IsDocentLinked @ModulewijzerId, @DocentId";
+
+                    checkLink.Parameters.AddRange(new SqlParameter[]
+                    {
+                                    new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModuleId },
+                                     new SqlParameter("@DocentId", SqlDbType.Int) { Value = DocentId },
+                    });
+
+                    using (var reader = checkLink.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            result = reader.GetInt32(0);
+                        }
+                    }
+                    //result = (int)checkLink.ExecuteScalar();
+                }
+                connection.Close();
+            }
+            return result;
+        }
+
         /// <summary>
         /// Gets a docent with the given ID from the database.
         /// </summary>
