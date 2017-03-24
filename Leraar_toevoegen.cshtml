@@ -1,29 +1,59 @@
-﻿@using Modulewijzer.Models;
-@using Modulewijzer.DataAccess;
+﻿@using Modulewijzer.DataAccess;
+@using System.Data.SqlClient;
+@using System;
+@using System.Data;
 @using System.Data.SqlClient;
 @{
     Layout = "_Layout.cshtml";
     Page.title = "Leraar toevoegen";
 
+    int result = 0;
     int ModulewijzerId = 0;
     int docentId = 0;
     string Voorletters = "";
     string Achternaam = "";
     string Tussenvoegsel = "";
 
-    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    if (!Request.Form["toevoegen"].IsEmpty())
     {
-        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "EXEC LinkDocent @ModulewijzerId, @DocentId";
+
+                command.Parameters.AddRange(new SqlParameter[]
+                {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@DocentId", SqlDbType.Int) { Value = Request.Form["toevoegen"] },
+                });
+
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
     }
 
-    if (!Request.Form["Leraar_toevoegen"].IsEmpty())
+    if (!Request.Form["verwijderen"].IsEmpty())
     {
-        //Code om leraar te assignen aan een module
-    }
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "EXEC DropLinkDocenten @ModulewijzerId, @DocentId";
 
-    if (!Request.Form["Leraar_verwijderen"].IsEmpty())
-    {
-        //Code om leraar te unassignen aan een module
+                command.Parameters.AddRange(new SqlParameter[]
+                {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@DocentId", SqlDbType.Int) { Value = Request.Form["verwijderen"] },
+                });
+
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
     }
 }
 
@@ -40,10 +70,12 @@
         </tr>
         @using (var connection = new SqlConnection(DbConnection.ConnectionString))
         {
-            connection.Open();
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT DocentId, Voorletters, Achternaam, Tussenvoegsel FROM Docenten";
+                connection.Open();
+
+                command.CommandText = "EXEC GetDocenten @ModuleId";
+                command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) {Value = ModulewijzerId});
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -53,11 +85,22 @@
                         Voorletters = reader.GetString(1);
                         Achternaam = reader.GetString(2);
                         Tussenvoegsel = reader.GetString(3);
+
+                        result = DbConnection.Instance.Docenten.GetLink(docentId, ModulewijzerId);
+
                         <tr>
                             <td>@Achternaam</td>
                             <td>@Voorletters</td>
                             <td>@Tussenvoegsel</td>
-                            <td><button type="submit" class="btn btn-success" value="@docentId" form="Leraar_toevoegen"><i class="fa fa-plus" aria-hidden="true"></i> Toevoegen</button></td>
+                            @{if (result != 0)
+                                {
+                                    <td><button type="submit" class="btn btn-danger" name="verwijderen" value="@docentId" form="Leraar_verwijderen">Verwijderen</button></td>;
+                                }
+                                else
+                                {
+                                    <td><button type="submit" class="btn btn-success" value="@docentId" form="Leraar_toevoegen" name="toevoegen"><i class="fa fa-plus" aria-hidden="true"></i> Toevoegen</button></td>
+                                }
+                            }
                         </tr>
                     }
                 }
