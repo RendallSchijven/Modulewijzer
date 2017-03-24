@@ -9,7 +9,7 @@
 
     int result = 0;
     int ModulewijzerId = 0;
-    int CompetentieId = 0;
+    int CompetentieId;
     string Naam = "";
     int Niveau = 0;
     string Competentie_beschrijving = "";
@@ -19,19 +19,19 @@
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
     }
 
-    if (!Request.Form["Competentie_toevoegen"].IsEmpty())
+    if (!Request.Form["toevoegen"].IsEmpty())
     {
         using (var connection = new SqlConnection(DbConnection.ConnectionString))
         {
             connection.Open();
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "EXEC LinkCompetentie @ModulewijzerId @CompetentieId";
+                command.CommandText = "EXEC LinkCompetentie @ModulewijzerId, @CompetentieId";
 
                 command.Parameters.AddRange(new SqlParameter[]
                 {
                         new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
-                        new SqlParameter("@Competentie", SqlDbType.Int) { Value = CompetentieId },
+                        new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = Request.Form["toevoegen"] },
                 });
 
                 command.ExecuteNonQuery();
@@ -40,19 +40,19 @@
         }
     }
 
-    if (!Request.Form["Competentie_verwijderen"].IsEmpty())
+    if (!Request.Form["verwijderen"].IsEmpty())
     {
         using (var connection = new SqlConnection(DbConnection.ConnectionString))
         {
             connection.Open();
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "EXEC DropLinkCompetentie @ModulewijzerId @CompetentieId";
+                command.CommandText = "EXEC DropLinkCompetentie @ModulewijzerId, @CompetentieId";
 
                 command.Parameters.AddRange(new SqlParameter[]
                 {
                         new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
-                        new SqlParameter("@Competentie", SqlDbType.Int) { Value = CompetentieId },
+                        new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = Request.Form["verwijderen"] },
                 });
 
                 command.ExecuteNonQuery();
@@ -93,40 +93,21 @@
                             Niveau = reader.GetInt32(2);
                             Competentie_beschrijving = reader.GetString(3);
 
-                            //if (reader.IsDBNull(4))
-                            //{
-                            //    result = 0;
-                            //}
-                            //else
-                            //{
-                            //    result = 1;
-                            //}
+                            result = DbConnection.Instance.Competentie.GetLink(CompetentieId, ModulewijzerId);
 
-                            using (var checkLink = connection.CreateCommand())
-                            {
-                                checkLink.CommandText = "EXEC IsCompetentieLinked @ModulewijzerId @CompetentieId";
-
-                                checkLink.Parameters.AddRange(new SqlParameter[]
-                                {
-                                    new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
-                                     new SqlParameter("@Competentie", SqlDbType.Int) { Value = CompetentieId },
-                                });
-
-                                //result = (int)command.ExecuteScalar();
-                            }
                             <tr>
                                 <td>@Naam</td>
                                 <td>@Niveau</td>
                                 <td>@Competentie_beschrijving</td>
-                                @switch (result)
-                            {
-                                case 0:
-                                        <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>;
-                                    break;
-                                case 1:
-                                        <td><button type="submit" class="btn btn-danger" value="@CompetentieId" form="Competentie_verwijderen">Verwijderen</button></td>
-                                        break;
-                                }
+                                @{if (result != 0)
+                                    {
+                                        <td><button type="submit" class="btn btn-danger" name="verwijderen" value="@CompetentieId" form="Competentie_verwijderen">Verwijderen</button></td>;
+                                    }
+                                    else
+                                    {
+                                        <td><button type="submit" class="btn btn-success" name="toevoegen" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>;
+                                    }
+                               }
                             </tr>
                         }
                     }
