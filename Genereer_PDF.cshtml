@@ -48,7 +48,7 @@
                         }
                     }
 
-                    command.CommandText = "SELECT Voorletters, Achternaam FROM Docenten WHERE DocentId IN (SELECT DocentId FROM ModuleDocent WHERE ModuleId = @ModulewijzerId)";
+                    command.CommandText = "SELECT Voorletters, Achternaam, Tussenvoegsel FROM Docenten WHERE DocentId IN (SELECT DocentId FROM ModuleDocent WHERE ModuleId = @ModulewijzerId)";
                     command.ExecuteNonQuery();
 
                     using (var reader = command.ExecuteReader())
@@ -58,7 +58,8 @@
                             Docent d = new Docent()
                             {
                                 Voorletters = reader.GetString(0),
-                                Achternaam = reader.GetString(1)
+                                Achternaam = reader.GetString(1),
+                                Tussenvoegsel = reader.GetString(2)
                             };
                             pdfConverter.AddDocent(d);
                         }

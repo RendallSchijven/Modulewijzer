@@ -36,7 +36,11 @@ namespace Modulewijzer.Converters
             string s = "";
             for (int i = 0; i < _docenten.Count; i++)
             {
-                s += _docenten[i].Voorletters + " " + _docenten[i].Achternaam;
+                string tussen = " ";
+                if (_docenten[i].Tussenvoegsel != null) {
+                    tussen = $" {_docenten[i].Tussenvoegsel} ";
+                }
+                s += _docenten[i].Voorletters + tussen + _docenten[i].Achternaam;
                 if (i < _docenten.Count - 1) s += ", ";
             }
             m_doc.Add(new Paragraph(s));

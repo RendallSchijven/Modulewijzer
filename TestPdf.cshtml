@@ -10,9 +10,8 @@
         AantalEcs = 1,
     };
 
-    using (var pdfConverter = new PdfConverter(@""))
     {
-        pdfConverter.AddDocent(new Docent() { Achternaam = "Test", Voorletters = "A. B. " });
+        pdfConverter.AddDocent(new Docent() { Achternaam = "Test", Voorletters = "A. B.", Tussenvoegsel= "de"});
         pdfConverter.AddModule(module);
     }
 }
