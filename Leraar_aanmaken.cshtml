@@ -26,14 +26,16 @@
 
         DbConnection.Instance.Docenten.Create(docent);
 
-        Response.Redirect("Default");
+        Response.Redirect($"Leraar_toevoegen?ModulewijzerId={ModulewijzerId}");
     }
 }
 
 <div class="row">
     <div class="col-md-5 portfolio-item">
-        <h2>Nieuwe leraren toevoegen</h2>
         <form class="form-horizontal" method="post">
+            <div class="form-group">
+                <h3>Nieuwe leraar aanmaken</h3>
+            </div>
 
             <div class="form-group">
                 <label for="Voorletters">Voorletters<span style="color: red;">*@Html.ValidationMessage("Voorletters")</span></label><br>
@@ -51,7 +53,8 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" name="Leraar_add" class="btn btn-primary" value="Leraar_add"><i class="fa fa-user-plus" aria-hidden="true"></i> Leraar toevoegen</button>
+                <a href="Leraar_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                <button type="submit" name="Leraar_add" class="btn btn-primary" value="Leraar_add"><i class="fa fa-user-plus" aria-hidden="true"></i> Leraar aaamaken</button>
             </div>
         </form>
     </div>

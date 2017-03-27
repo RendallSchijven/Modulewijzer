@@ -33,11 +33,5 @@ namespace Modulewijzer.Interfaces
         /// <param name="id">The row's ID.</param>
         /// <returns>A row with the given ID.</returns>
         T GetById(int id);
-
-        /// <summary>
-        /// Gets all rows in the table.
-        /// </summary>
-        /// <returns>A collection of all rows in the table.</returns>
-        T[] GetAll();
     }
 }

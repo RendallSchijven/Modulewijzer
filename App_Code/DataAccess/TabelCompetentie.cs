@@ -92,6 +92,37 @@ namespace Modulewijzer.DataAccess
             }
         }
 
+        public int GetLink(int CompetentieId, int ModuleId)
+        {
+            int result = 0;
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+
+                using (var checkLink = connection.CreateCommand())
+                {
+                    checkLink.CommandText = "EXEC IsCompetentieLinked @ModulewijzerId, @CompetentieId";
+
+                    checkLink.Parameters.AddRange(new SqlParameter[]
+                    {
+                                    new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModuleId },
+                                     new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = CompetentieId },
+                    });
+
+                    using (var reader = checkLink.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            result = reader.GetInt32(0);
+                        }
+                    }
+                    //result = (int)checkLink.ExecuteScalar();
+                }
+                connection.Close();
+            }
+            return result;
+        }
+
         /// <summary>
         /// Gets a competentie with the given ID from the database.
         /// </summary>
@@ -100,17 +131,6 @@ namespace Modulewijzer.DataAccess
         public Competentie GetById(int id)
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets all competenties in the database.
-        /// </summary>
-        /// <returns>A collection of all competenties in the database.</returns>
-        public Competentie[] GetAll()
-        {
-            var result = new List<Competentie>();
-
-            return result.ToArray();
         }
     }
 }

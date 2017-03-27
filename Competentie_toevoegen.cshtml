@@ -1,12 +1,15 @@
 ﻿@using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
-@using Modulewijzer.Models;
+@using System;
+@using System.Data;
+@using System.Data.SqlClient;
 @{
     Layout = "_Layout.cshtml";
     Page.title = "Competenties toevoegen";
 
+    int result = 0;
     int ModulewijzerId = 0;
-    int CompetentieId = 0;
+    int CompetentieId;
     string Naam = "";
     int Niveau = 0;
     string Competentie_beschrijving = "";
@@ -16,14 +19,46 @@
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
     }
 
-    if (!Request.Form["Competentie_toevoegen"].IsEmpty())
+    if (!Request.Form["toevoegen"].IsEmpty())
     {
-        //Code om competentie te assignen aan een module
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "EXEC LinkCompetentie @ModulewijzerId, @CompetentieId";
+
+                command.Parameters.AddRange(new SqlParameter[]
+                {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = Request.Form["toevoegen"] },
+                });
+
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
     }
 
-    if (!Request.Form["Competentie_verwijderen"].IsEmpty())
+    if (!Request.Form["verwijderen"].IsEmpty())
     {
-        //Code om competentie te unassignen aan een module
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "EXEC DropLinkCompetentie @ModulewijzerId, @CompetentieId";
+
+                command.Parameters.AddRange(new SqlParameter[]
+                {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = Request.Form["verwijderen"] },
+                });
+
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
     }
 }
 
@@ -39,35 +74,50 @@
             <th>Beschrijving</th>
             <th></th>
         </tr>
-        @using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
-            using (var command = connection.CreateCommand())
+        @{using (var connection = new SqlConnection(DbConnection.ConnectionString))
             {
-                command.CommandText = "SELECT CompetentieId, Naam, Niveau, Competentie_beschrijving FROM Competenties";
-
-                using (var reader = command.ExecuteReader())
+                using (var command = connection.CreateCommand())
                 {
-                    while (reader.Read())
-                    {
-                        CompetentieId = reader.GetInt32(0);
-                        Naam = reader.GetString(1);
-                        Niveau = reader.GetInt32(2);
-                        Competentie_beschrijving = reader.GetString(3);
-                        <tr>
-                            <td>@Naam</td>
-                            <td>@Niveau</td>
-                            <td>@Competentie_beschrijving</td>
-                            <td><button type="submit" class="btn btn-success" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>
-                        </tr>
-                    }
-                }
+                    connection.Open();
 
+                    command.CommandText = "EXEC GetCompetenties @ModuleId";
+                    command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = ModulewijzerId });
+
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            CompetentieId = reader.GetInt32(0);
+                            Naam = reader.GetString(1);
+                            Niveau = reader.GetInt32(2);
+                            Competentie_beschrijving = reader.GetString(3);
+
+                            result = DbConnection.Instance.Competentie.GetLink(CompetentieId, ModulewijzerId);
+
+                            <tr>
+                                <td>@Naam</td>
+                                <td>@Niveau</td>
+                                <td>@Competentie_beschrijving</td>
+                                @{if (result != 0)
+                                    {
+                                        <td><button type="submit" class="btn btn-danger" name="verwijderen" value="@CompetentieId" form="Competentie_verwijderen">Verwijderen</button></td>;
+                                    }
+                                    else
+                                    {
+                                        <td><button type="submit" class="btn btn-success" name="toevoegen" value="@CompetentieId" form="Competentie_toevoegen">Toevoegen</button></td>;
+                                    }
+                               }
+                            </tr>
+                        }
+                    }
+
+                }
+                connection.Close();
             }
-            connection.Close();
         }
     </table>
-    <br>
+    <br />
     <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>  Terug</a>
     <a href="Competentie_aanmaken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-plus-square" aria-hidden="true"></i>  Nieuwe competentie aanmaken</a>
 </div>

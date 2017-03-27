@@ -58,8 +58,8 @@
 
 <form method="post" id="Modulewijzer_verwijderen"></form>
 
-<div class="table-responsive">
-    <h2>Module "@naam"</h2>
+<div>
+    <h2>Modulewijzer</h2>
     <b>Naam</b><br /><p>@naam</p>
     <b>EC's</b><br /><p>@EC</p>
     <b>Studiejaar</b><br /><p>@studiejaar</p>
@@ -72,8 +72,11 @@
     <a href="Default" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
     <a href="Genereer_PDF.cshtml?ModulewijzerId=@ModulewijzerId" class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Maak PDF</a>
     <div style="float:right;">
-        <p><a href="Leraar_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i> Leraar toevoegen</a>
-        <a href="Modulewijzer_aanpassen?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-pencil" aria-hidden="true"></i> Module aanpassen</a>
-        <button type="submit" name="Modulewijzer_verwijderen" class="btn btn-danger" value="@ModulewijzerId" form="Modulewijzer_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Module verwijderen</button></p>
+        <p>
+            <a href="Competentie_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-plus" aria-hidden="true"></i> Competentie toevoegen</a>
+            <a href="Leraar_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i> Leraar toevoegen</a>
+            <a href="Modulewijzer_aanpassen?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-pencil" aria-hidden="true"></i> Module aanpassen</a>
+            <button type="submit" name="Modulewijzer_verwijderen" class="btn btn-danger" value="@ModulewijzerId" form="Modulewijzer_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Module verwijderen</button>
+        </p>
     </div>
 </div>

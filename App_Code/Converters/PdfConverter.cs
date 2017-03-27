@@ -72,9 +72,9 @@ namespace Modulewijzer.Converters
             // Competentie naar Pdf
         }
 
-       public void Dispose()
+        public void Dispose()
         {
             m_doc.Close();
-        } 
+        }
     }
 }

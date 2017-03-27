@@ -117,34 +117,6 @@ namespace Modulewijzer.DataAccess
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Gets all modules in the database.
-        /// </summary>
-        /// <returns>A collection of all modules in the database.</returns>
-        public Module[] GetAll()
-        {
-            List<Module> result = null;
-
-            using (var connection = new SqlConnection(DbConnection.ConnectionString))
-            {
-                connection.Open();
-
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT [ModulewijzerId], [Naam], [EC], [Studiejaar], [Periode], " +
-                        "[Werkvorm], [Leeruitkomsten], [Literatuur], [Planning] FROM [Module]";
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        result = GetModulesFromReader(reader);
-                    }
-                }
-
-                connection.Close();
-            }
-            return result.ToArray();
-        }
-
         #region Private methods.
         private List<Module> GetModulesFromReader(SqlDataReader reader)
         {
