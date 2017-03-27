@@ -1,24 +1,46 @@
-﻿@using Modulewijzer.Models;
-@using Modulewijzer.DataAccess;
+﻿@using Modulewijzer.DataAccess;
+@using System;
+@using System.Data;
 @using System.Data.SqlClient;
 @{   
     Layout = "_Layout.cshtml";
     Page.title = "Home";
+
+    Validation.RequireField("zoek", "Je moet zoekterm invoeren");
 
     int ModulewijzerId;
     string naam = "";
     string EC = "";
     string studiejaar = "";
     string periode = "";
-    string werkvorm = "";
-    string leeruitkomsten = "";
-    string literatuur = "";
-    string planning = "";
 }
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="get" class="form-horizontal" name="zoeken" action="~/Zoekresultaten.cshtml">
+
+            <div class="form-group">
+                <label for="zoek">Zoeken<span style="color: red;">*@Html.ValidationMessage("zoek")</span></label>
+                <input class="form-control" type="text" id="zoek" name="zoek" placeholder="zoekterm">
+            </div>
+
+            <div class="form-group">
+                <select id="zoektype" name="zoektype">
+                    <option value="Naam">Naam</option>
+                    <option value="EC">Aantal EC</option>
+                    <option value="Studiejaar">Studiejaar</option>
+                    <option value="Periode">Periode</option>
+                </select>
+            </div>
+
+            <button type="submit" name="zoeken" class="btn btn-primary" value="zoeken"><i class="fa fa-search"></i> Zoeken</button>
+
+        </form>
+    </div>
+</div>
 
 <div class="table-responsive">
     <h2>Modules</h2>
-    <input type="text" name="zoek" id="zoek" placeholder="zoekterm" />
     <table class="table-bordered">
         <tr>
             <th>Naam</th>
@@ -32,7 +54,7 @@
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT ModulewijzerId, Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer";
+                command.CommandText = "SELECT ModulewijzerId, Naam, EC, Studiejaar, Periode FROM Modulewijzer";
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -43,10 +65,6 @@
                         EC = Convert.ToString(reader.GetInt32(2));
                         studiejaar = Convert.ToString(reader.GetInt32(3));
                         periode = Convert.ToString(reader.GetInt32(4));
-                        werkvorm = reader.GetString(5);
-                        leeruitkomsten = reader.GetString(6);
-                        literatuur = reader.GetString(7);
-                        planning = reader.GetString(8);
                         <tr>
                             <td>@naam</td>
                             <td>@EC</td>

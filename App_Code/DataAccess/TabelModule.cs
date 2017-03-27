@@ -117,8 +117,20 @@ namespace Modulewijzer.DataAccess
             throw new NotImplementedException();
         }
 
+        public List<Module> Search(SearchTerm term)
+        {
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+
+                var cmd = term.GetCommand();
+                cmd.Connection = connection;
+                return GetModulesFromReader(cmd.ExecuteReader());
+            }
+        }
+
         #region Private methods.
-        private List<Module> GetModulesFromReader(SqlDataReader reader)
+        public List<Module> GetModulesFromReader(SqlDataReader reader)
         {
             var result = new List<Module>();
             while (reader.Read())
@@ -130,10 +142,10 @@ namespace Modulewijzer.DataAccess
                     AantalEcs = reader.GetInt32(2),
                     StudieJaar = reader.GetInt32(3),
                     Periode = reader.GetInt32(4),
-                    Werkvorm = reader.GetString(5),
-                    Leeruitkomsten = reader.GetString(6),
-                    Literatuur = reader.GetString(7),
-                    Planning = reader.GetString(8)
+                    //Werkvorm = reader.GetString(5),
+                    //Leeruitkomsten = reader.GetString(6),
+                    //Literatuur = reader.GetString(7),
+                    //Planning = reader.GetString(8)
                 });
             }
             return result;
