@@ -20,52 +20,84 @@
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
-        #region Make module
-        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        using (var pdfConverter = new PdfConverter($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Modulewijzer/PDF/Module{ModulewijzerId}.pdf"))
         {
-            connection.Open();
-
-            using (var command = connection.CreateCommand())
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
             {
-                command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
-                command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
-                command.ExecuteNonQuery();
+                connection.Open();
 
-                using (var reader = command.ExecuteReader())
+                using (var command = connection.CreateCommand())
                 {
-                    while (reader.Read())
-                    {
-                        naam = reader.GetString(0);
-                        EC = reader.GetInt32(1);
-                        studiejaar = reader.GetInt32(2);
-                        periode = reader.GetInt32(3);
-                        werkvorm = reader.GetString(4);
-                        leeruitkomsten = reader.GetString(5);
-                        literatuur = reader.GetString(6);
-                        planning = reader.GetString(7);
-                    }
-                }
+                    // Module
+                    command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
+                    command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
+                    command.ExecuteNonQuery();
 
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            naam = reader.GetString(0);
+                            EC = reader.GetInt32(1);
+                            studiejaar = reader.GetInt32(2);
+                            periode = reader.GetInt32(3);
+                            werkvorm = reader.GetString(4);
+                            leeruitkomsten = reader.GetString(5);
+                            literatuur = reader.GetString(6);
+                            planning = reader.GetString(7);
+                        }
+                    }
+
+                    command.CommandText = "SELECT Voorletters, Achternaam, Tussenvoegsel FROM Docenten WHERE DocentId IN (SELECT DocentId FROM ModuleDocent WHERE ModuleId = @ModulewijzerId)";
+                    command.ExecuteNonQuery();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Docent d = new Docent()
+                            {
+                                Voorletters = reader.GetString(0),
+                                Achternaam = reader.GetString(1),
+                                Tussenvoegsel = reader.GetString(2)
+                            };
+                            pdfConverter.AddDocent(d);
+                        }
+                    }
+
+                    command.CommandText = "SELECT Naam, Niveau FROM Competenties WHERE CompetentieId IN (SELECT CompetentieId FROM ModuleCompetentie WHERE ModuleId = @ModulewijzerId)";
+                    command.ExecuteNonQuery();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Competentie c = new Competentie()
+                            {
+                                Naam = reader.GetString(0),
+                                Niveau = reader.GetInt32(1)
+                            };
+                            pdfConverter.AddCompetentie(c);
+                        }
+                    }
+
+                }
+                connection.Close();
+                Module module = new Module()
+                {
+                    Naam = naam,
+                    AantalEcs = EC,
+                    StudieJaar = studiejaar,
+                    Periode = periode,
+                    Werkvorm = werkvorm,
+                    Leeruitkomsten = leeruitkomsten,
+                    Literatuur = literatuur,
+                    Planning = planning
+                };
+                pdfConverter.AddModule(module);
             }
-            connection.Close();
         }
-        Module module = new Module()
-        {
-            Naam = naam,
-            AantalEcs = EC,
-            StudieJaar = studiejaar,
-            Periode = periode,
-            Werkvorm = werkvorm,
-            Leeruitkomsten = leeruitkomsten,
-            Literatuur = literatuur,
-            Planning = planning
-        };
-        #endregion
         // Verander hier even Benjamin naar je eigen gebruikersnaam als je het wilt uittesten
-        using (var pdfConverter = new PdfConverter(@"C:\Users\%USERNAME%\Documents\Modulewijzer\PDF\Module" + ModulewijzerId + ".pdf"))
-        {
-            pdfConverter.AddModule(module);
-        }
         Response.Redirect("PDF/Module" + ModulewijzerId + ".pdf");
     }
 
