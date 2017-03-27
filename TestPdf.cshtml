@@ -1,5 +1,6 @@
 ﻿@using Modulewijzer.Models;
 @using Modulewijzer.Converters;
+
 @{
     var module = new Module()
     {
@@ -11,8 +12,7 @@
 
     using (var pdfConverter = new PdfConverter(@""))
     {
-        pdfConverter.AddLeraar("Leraar 1");
-        pdfConverter.AddLeraar("Leraar 2");
+        pdfConverter.AddDocent(new Docent() { Achternaam = "Test", Voorletters = "A. B. " });
         pdfConverter.AddModule(module);
     }
-} 
+}
