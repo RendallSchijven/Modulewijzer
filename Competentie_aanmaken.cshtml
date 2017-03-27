@@ -10,10 +10,15 @@
     Validation.RequireField("Beschrijving", "Je moet een beschrijving toevoegen");
 
     int ModulewijzerId = 0;
+    bool module = true;
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+    }
+    else
+    {
+        module = false;
     }
 
     if (IsPost && Validation.IsValid())
@@ -65,7 +70,14 @@
             </div>
 
             <div class="form-group">
-                <a href="Competentie_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                @if (module == true)
+                {
+                    <a href="Competentie_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                }
+                else
+                {
+                    <a href="~/Competenties.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                }
                 <button type="submit" name="Competentie_aanmaken" class="btn btn-primary" value="Competentie_toevoegen"><i class="fa fa-plus-square" aria-hidden="true"></i> Competentie aanmaken</button>
             </div>
         </form>

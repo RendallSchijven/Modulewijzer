@@ -5,7 +5,8 @@
  */
 
 body {
-    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    padding-top: 70px;
+    padding-bottom: 60px;
 }
 
 .portfolio-item {
@@ -34,8 +35,10 @@ th, td {
 .footer {
   bottom: 0;
   width: 100%;
-  /* Set the fixed height of the footer here */
   height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+  line-height: 60px;
   background-color: Lightgrey;
+  position: absolute;
+  top: 100%;
+  margin-top: -60px;
 }
