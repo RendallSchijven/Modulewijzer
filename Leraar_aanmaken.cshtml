@@ -9,10 +9,15 @@
     Validation.RequireField("Achternaam", "Je moet een achternaam toevoegen");
 
     int ModulewijzerId = 0;
+    bool module = true;
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+    }
+    else
+    {
+        module = false;
     }
 
     if (IsPost && Validation.IsValid())
@@ -53,7 +58,14 @@
             </div>
 
             <div class="form-group">
-                <a href="Leraar_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                @if (module == true)
+                {
+                    <a href="Leraar_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                }
+                else
+                {
+                    <a href="~/Docenten.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                }
                 <button type="submit" name="Leraar_add" class="btn btn-primary" value="Leraar_add"><i class="fa fa-user-plus" aria-hidden="true"></i> Leraar aaamaken</button>
             </div>
         </form>

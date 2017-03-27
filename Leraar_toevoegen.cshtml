@@ -14,6 +14,11 @@
     string Achternaam = "";
     string Tussenvoegsel = "";
 
+    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    {
+        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+    }
+
     if (!Request.Form["toevoegen"].IsEmpty())
     {
         using (var connection = new SqlConnection(DbConnection.ConnectionString))
