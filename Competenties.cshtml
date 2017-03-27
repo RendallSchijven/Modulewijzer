@@ -1,0 +1,60 @@
+﻿@using Modulewijzer.DataAccess;
+@using System.Data.SqlClient;
+@using System;
+@using System.Data;
+@using System.Data.SqlClient;
+@{
+    Page.Title = "Competenties";
+    Layout = "_Layout.cshtml";
+
+    int CompetentieId;
+    string Naam = "";
+    int Niveau = 0;
+    string Competentie_beschrijving = "";
+}
+
+<div class="table-responsive">
+    <h3>Competenties</h3>
+    <table class="table-bordered">
+        <tr>
+            <th>Naam</th>
+            <th>Niveau</th>
+            <th>Beschrijving</th>
+            <th></th>
+        </tr>
+        @{using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    command.CommandText = "EXEC GetCompetenties @ModuleId";
+                    command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = 0 });
+
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            CompetentieId = reader.GetInt32(0);
+                            Naam = reader.GetString(1);
+                            Niveau = reader.GetInt32(2);
+                            Competentie_beschrijving = reader.GetString(3);
+
+                            <tr>
+                                <td>@Naam</td>
+                                <td>@Niveau</td>
+                                <td>@Competentie_beschrijving</td>
+                            </tr>
+                            }
+                        }
+
+                    }
+                    connection.Close();
+                }
+            }
+    </table>
+    <br />
+    <a href="~/Default.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>  Terug</a>
+    <a href="~/Competentie_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-plus-square" aria-hidden="true"></i>  Nieuwe competentie aanmaken</a>
+</div>

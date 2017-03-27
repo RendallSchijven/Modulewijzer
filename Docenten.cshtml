@@ -1,0 +1,58 @@
+﻿@using Modulewijzer.DataAccess;
+@using System.Data.SqlClient;
+@using System;
+@using System.Data;
+@using System.Data.SqlClient;
+@{
+    Page.Title = "Docenten";
+    Layout = "_Layout.cshtml";
+
+    int docentId = 0;
+    string Voorletters = "";
+    string Achternaam = "";
+    string Tussenvoegsel = "";
+}
+
+<div class="table-responsive">
+    <h3>Leraren aan modulewijzer toevoegen</h3>
+    <table class="table-bordered">
+        <tr>
+            <th>Achternaam</th>
+            <th>Voorletters</th>
+            <th>Tussenvoegsel</th>
+        </tr>
+        @using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            using (var command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                command.CommandText = "EXEC GetDocenten @ModuleId";
+                command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = 0 });
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        docentId = reader.GetInt32(0);
+                        Voorletters = reader.GetString(1);
+                        Achternaam = reader.GetString(2);
+                        Tussenvoegsel = reader.GetString(3);
+
+
+                        <tr>
+                            <td>@Achternaam</td>
+                            <td>@Voorletters</td>
+                            <td>@Tussenvoegsel</td>
+                        </tr>
+                    }
+                }
+
+            }
+            connection.Close();
+        }
+    </table>
+    <br />
+    <a href="~/Default.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+    <a href="~/Leraar_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i>  Nieuwe leraar aanmaken</a>
+</div>
