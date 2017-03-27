@@ -1,5 +1,6 @@
 ﻿@using Modulewijzer.Models;
 @using Modulewijzer.Converters;
+
 @{
     var module = new Module()
     {
@@ -9,10 +10,9 @@
         AantalEcs = 1,
     };
 
-    using (var pdfConverter = new PdfConverter(@""))
+    using (var pdfConverter = new PdfConverter(@"C:/Users/Benjamin/Desktop/Modules.pdf"))
     {
-        pdfConverter.AddLeraar("Leraar 1");
-        pdfConverter.AddLeraar("Leraar 2");
+        pdfConverter.AddDocent(new Docent() { Achternaam = "Test", Voorletters = "A. B. " });
         pdfConverter.AddModule(module);
     }
-} 
+}

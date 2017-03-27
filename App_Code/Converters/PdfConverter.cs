@@ -5,6 +5,7 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 
+
 namespace Modulewijzer.Converters
 {
     public sealed class PdfConverter : IDisposable
@@ -14,7 +15,8 @@ namespace Modulewijzer.Converters
         private PdfWriter m_writer;
         private Font _bigheader = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD);
         private Font _smallheader = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
-        private List<string> _leraren = new List<string>();
+        private List<Docent> _docenten = new List<Docent>();
+        private List<Competentie> _competenties = new List<Competentie>();
 
         public PdfConverter(string fileName)
         {
@@ -32,10 +34,10 @@ namespace Modulewijzer.Converters
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Docenten", _smallheader));
             string s = "";
-            for (int i = 0; i < _leraren.Count; i++)
+            for (int i = 0; i < _docenten.Count; i++)
             {
-                s += _leraren[i];
-                if (i < _leraren.Count - 1) s += ", ";
+                s += _docenten[i].Voorletters + " " + _docenten[i].Achternaam;
+                if (i < _docenten.Count - 1) s += ", ";
             }
             m_doc.Add(new Paragraph(s));
             m_doc.Add(Chunk.NEWLINE);
@@ -52,7 +54,12 @@ namespace Modulewijzer.Converters
             m_doc.Add(new Paragraph(module.Leeruitkomsten));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Competenties", _smallheader));
-            // Competenties hier
+            List list = new List(List.NUMERICAL);
+            foreach (Competentie x in _competenties)
+            {
+                list.Add($"{x.Naam} ({x.Niveau})");
+            }
+            m_doc.Add(list);
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Literatuur", _smallheader));
             m_doc.Add(new Paragraph(module.Literatuur));
@@ -60,16 +67,18 @@ namespace Modulewijzer.Converters
             m_doc.Add(new Paragraph("Planning", _smallheader));
             // Planning
         }
-        public void AddLeraar(string naam)
+        public void AddDocent(Docent docent)
         {
 
             // Leraar naar Pdf
             // Gebruikt nu string ipv Docent object
-            _leraren.Add(naam);
+            _docenten.Add(docent);
         }
         public void AddCompetentie(Competentie competentie)
         {
             // Competentie naar Pdf
+            // Gebruikt nu string ipv Competentie object
+            _competenties.Add(competentie);
         }
 
         public void Dispose()
