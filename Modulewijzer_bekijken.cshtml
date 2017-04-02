@@ -15,6 +15,10 @@
     string leeruitkomsten = "";
     string literatuur = "";
     string planning = "";
+    string view_docent = "";
+    string view_comp = "";
+    List<string> docenten = new List<string>();
+    List<string> competenties = new List<string>();
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
@@ -48,6 +52,55 @@
             connection.Close();
         }
     }
+    else { Response.Redirect("Default"); }
+
+    using (var connection = new SqlConnection(DbConnection.ConnectionString))
+    {
+        using (var command = connection.CreateCommand())
+        {
+            connection.Open();
+
+            command.CommandText = "EXEC GetLinkedDocenten @ModuleId";
+            command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) {Value = ModulewijzerId});
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    string voorletters = reader.GetString(1);
+                    string achternaam = reader.GetString(2);
+                    string tussenvoegsel = reader.GetString(3);
+                    docenten.Add($"{voorletters}. {tussenvoegsel} {achternaam} ");
+                }
+            }
+
+        }
+        connection.Close();
+    }
+
+    using (var connection = new SqlConnection(DbConnection.ConnectionString))
+    {
+        using (var command = connection.CreateCommand())
+        {
+            connection.Open();
+
+            command.CommandText = "EXEC GetLinkedCompetenties @ModuleId";
+            command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = ModulewijzerId });
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    string comp_naam = reader.GetString(1);
+                    string niveau = Convert.ToString(reader.GetInt32(2));
+                    string competentie_beschrijving = reader.GetString(3);
+                    competenties.Add($"{comp_naam} {niveau} {competentie_beschrijving} ");
+                }
+            }
+
+        }
+        connection.Close();
+    }
 
     if (!Request.Form["Modulewijzer_verwijderen"].IsEmpty())
     {
@@ -62,11 +115,13 @@
 <div>
     <h2>Modulewijzer</h2>
     <b>Naam</b><br /><p>@naam</p>
+    <b>Docenten</b><br /><p>@foreach (string s in docenten) { view_docent = s; @view_docent}</p>
     <b>EC's</b><br /><p>@EC</p>
     <b>Studiejaar</b><br /><p>@studiejaar</p>
     <b>Periode</b><br /><p>@periode</p>
     <b>Werkvorm</b><br /><p>@werkvorm</p>
     <b>Leeruitkomsten</b><br /><p>@leeruitkomsten</p>
+    <b>Competenties</b><br /><p>@foreach (string s in competenties) { view_comp = s; @view_comp <br />}</p>
     <b>Literatuur</b><br /><p>@literatuur</p>
     <b>Planning</b><br /><p>@planning</p>
     <hr />

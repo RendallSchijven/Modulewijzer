@@ -32,8 +32,11 @@
 
         DbConnection.Instance.Competentie.Create(competentie);
 
-
-        Response.Redirect($"Competentie_toevoegen?ModulewijzerId={ModulewijzerId}");
+        if (ModulewijzerId != 0)
+        {
+            Response.Redirect($"Competentie_toevoegen?ModulewijzerId={ModulewijzerId}");
+        }
+        else { Response.Redirect("Competenties"); }
     }
 }
 

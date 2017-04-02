@@ -53,6 +53,7 @@
             connection.Close();
         }
     }
+    else { Response.Redirect("Default"); }
 
     if (IsPost && Validation.IsValid())
     {
