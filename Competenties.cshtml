@@ -12,14 +12,14 @@
     int Niveau = 0;
     string Competentie_beschrijving = "";
 
-    if (!Request.Form["Competentie_verwijderen"].IsEmpty())
-    {
-        DbConnection.Instance.Competentie.Delete(CompetentieId);
-        Response.Redirect("Competenties");
-    }
+    //if (!Request.Form["Competentie_verwijderen"].IsEmpty())
+    //{
+    //    DbConnection.Instance.Competentie.Delete(CompetentieId);
+    //    Response.Redirect("Competenties");
+    //}
 }
 
-<form method="post" id="Competentie_verwijderen"></form>
+@*<form method="post" id="Competentie_verwijderen"></form>*@
 
 <div class="table-responsive">
     <h3>Competenties</h3>
@@ -28,7 +28,6 @@
             <th>Naam</th>
             <th>Niveau</th>
             <th>Beschrijving</th>
-            <th></th>
         </tr>
         @{using (var connection = new SqlConnection(DbConnection.ConnectionString))
             {
@@ -53,7 +52,8 @@
                                 <td>@Naam</td>
                                 <td>@Niveau</td>
                                 <td>@Competentie_beschrijving</td>
-                                <td><button type="submit" name="Competentie_verwijderen" class="btn btn-danger" value="CompetentieId" form="Competentie_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</button></td>
+                                <td><a href="Competentie_verwijderen?CompetentieId=@CompetentieId">Verwijderen</a></td>
+                                @*<td><button type="submit" name="Competentie_verwijderen" class="btn btn-danger" value="CompetentieId" form="Competentie_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</button></td>*@
                             </tr>
                             }
                         }

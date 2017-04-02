@@ -1,0 +1,10 @@
+﻿@using Modulewijzer.DataAccess;
+@using System.Data.SqlClient;
+@using System;
+@using System.Data;
+@using System.Data.SqlClient;
+@{
+    int docentId = Convert.ToInt32(Request.QueryString["docentId"]);
+    DbConnection.Instance.Docenten.Delete(docentId);
+    Response.Redirect("Docenten");
+}
