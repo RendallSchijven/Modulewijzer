@@ -31,7 +31,11 @@
 
         DbConnection.Instance.Docenten.Create(docent);
 
-        Response.Redirect($"Leraar_toevoegen?ModulewijzerId={ModulewijzerId}");
+        if (ModulewijzerId != 0)
+        {
+            Response.Redirect($"Leraar_toevoegen?ModulewijzerId={ModulewijzerId}");
+        }
+        else { Response.Redirect("Docenten"); }
     }
 }
 
