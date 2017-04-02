@@ -7,19 +7,19 @@
     Page.Title = "Docenten";
     Layout = "_Layout.cshtml";
 
-    int docentId = 0; 
+    int docentId = 0;
     string Voorletters = "";
     string Achternaam = "";
     string Tussenvoegsel = "";
 
-    if (!Request.Form["Docent_verwijderen"].IsEmpty())
-    {
-        DbConnection.Instance.Docenten.Delete(docentId);
-        Response.Redirect("Docenten");
-    }
+    //if (!Request.Form["Docent_verwijderen"].IsEmpty())
+    //{
+    //    DbConnection.Instance.Docenten.Delete(docentId);
+    //    Response.Redirect("Docenten");
+    //}
 }
 
-<form method="post" id="Docent_verwijderen"></form>
+@*<form method="post" id="Docent_verwijderen"></form>*@
 
 <div class="table-responsive">
     <h3>Leraren aan modulewijzer toevoegen</h3>
@@ -51,7 +51,8 @@
                             <td>@Achternaam</td>
                             <td>@Voorletters</td>
                             <td>@Tussenvoegsel</td>
-                            <td><button type="submit" name="Docent_verwijderen" class="btn btn-danger" value="docentId" form="Docent_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</button></td>
+                            <td><a href="Docent_verwijderen?docentId=@docentId">Verwijderen</a></td>
+                            @*<td><button type="submit" name="Docent_verwijderen" class="btn btn-danger" value="docentId" form="Docent_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</button></td>*@
                         </tr>
                     }
                 }
