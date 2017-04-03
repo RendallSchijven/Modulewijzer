@@ -55,10 +55,11 @@ namespace Modulewijzer.DataAccess
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "UPDATE [Docenten] SET [Voorletters]=@Voorletters, " +
-                        "[Achternaam]=@Achternaam, [Tussenvoegsel]=@Tussenvoegsel";
+                        "[Achternaam]=@Achternaam, [Tussenvoegsel]=@Tussenvoegsel WHERE [DocentId]=@Id";
 
-                    command.Parameters.Add(new SqlParameter[]
+                    command.Parameters.AddRange(new SqlParameter[]
                     {
+                        new SqlParameter("@Id", SqlDbType.Int) {Value = row.Id },
                         new SqlParameter("@Voorletters", SqlDbType.NVarChar) { Value = row.Voorletters },
                         new SqlParameter("@Achternaam", SqlDbType.NVarChar) { Value = row.Achternaam },
                         new SqlParameter("@Tussenvoegsel", SqlDbType.NVarChar) { Value = row.Tussenvoegsel }

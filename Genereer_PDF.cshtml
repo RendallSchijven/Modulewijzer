@@ -15,7 +15,7 @@
 
     // Script zet nu eerst DB om naar Module
 
-    int ModulewijzerId;
+    int ModulewijzerId = 0;
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
@@ -96,8 +96,11 @@
                 pdfConverter.AddModule(module);
             }
         }
-        // Verander hier even Benjamin naar je eigen gebruikersnaam als je het wilt uittesten
+
         Response.Redirect("PDF/Module" + ModulewijzerId + ".pdf");
+
+        //Write("<script>window.open('PDF/Module" + ModulewijzerId + ".pdf','_blank');</script>");
+        //Response.Redirect($"Modulewijzer_bekijken?ModulewijzerId={ModulewijzerId}");
     }
 
 }

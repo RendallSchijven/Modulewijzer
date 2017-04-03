@@ -1,0 +1,102 @@
+﻿@using System.Data;
+@using System.Data.SqlClient;
+@using Modulewijzer.Models;
+@using Modulewijzer.DataAccess;
+@{
+    Page.Title = "Competentie aanpassen";
+    Layout = "_Layout.cshtml";
+
+    Validation.RequireField("Naam", "Je moet naam toevoegen");
+    Validation.RequireField("Niveau", "Je moet een niveau toevoegen");
+    Validation.RequireField("Beschrijving", "Je moet een beschrijving toevoegen");
+
+    int competentieId = 0;
+    string naam = "";
+    int niveau = 0;
+    string competentie_beschrijving = "";
+
+    if (!Request.QueryString["CompetentieId"].IsEmpty())
+    {
+        competentieId = Convert.ToInt32(Request.QueryString["CompetentieId"]);
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT Naam, Niveau, Competentie_beschrijving FROM Competenties  WHERE CompetentieId = @competentieId";
+                command.Parameters.AddWithValue("@competentieId", competentieId);
+                command.ExecuteNonQuery();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        naam = reader.GetString(0);
+                        niveau = reader.GetInt32(1);
+                        competentie_beschrijving = reader.GetString(2);
+                    }
+                }
+
+            }
+            connection.Close();
+        }
+    }
+    else { Response.Redirect("Competenties"); }
+
+    if (IsPost && Validation.IsValid())
+    {
+        var competentie = new Competentie()
+        {
+            Id = competentieId,
+            Naam = Request.Form["Naam"],
+            Niveau = Convert.ToInt32(Request.Form["Niveau"]),
+            Beschrijving = Request.Form["Beschrijving"]
+        };
+
+        DbConnection.Instance.Competentie.Update(competentie);
+        Response.Redirect("Competenties");
+    }
+}
+
+<div class="row">
+    <div class="col-md-5 portfolio-item">
+        <form class="form-horizontal" method="post">
+            <div class="form-group">
+                <h3>Competentie aanpassen</h3>
+            </div>
+
+            <div class="form-group">
+                <label for="Naam">Naam<span style="color: red;">*@Html.ValidationMessage("Naam")</span></label><br>
+                Huidig: @naam<br />
+                Nieuw: <select id="Naam" name="Naam">
+                    <option value="Beheren">Beheren</option>
+                    <option value="Analyseren">Analyseren</option>
+                    <option value="Adviseren">Adviseren</option>
+                    <option value="Ontwerpen">Ontwerpen</option>
+                    <option value="Realiseren">Realiseren</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Niveau">Niveau<span style="color: red;">*@Html.ValidationMessage("Niveau")</span></label><br>
+                Huidig: @niveau<br />
+                Nieuw: <select id="Niveau" name="Niveau">
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Beschrijving">Beschrijving<span style="color: red">*@Html.ValidationMessage("Beschrijving")</span></label><br>
+                <input type="text" id="Beschrijving" name="Beschrijving" value="@competentie_beschrijving">
+            </div>
+
+            <div class="form-group">
+                <a href="~/Competenties.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                <button type="submit" name="Competentie_aanmaken" class="btn btn-primary" value="Competentie_toevoegen"><i class="fa fa-plus-square" aria-hidden="true"></i> Competentie aanpassen</button>
+            </div>
+        </form>
+    </div>
+</div>

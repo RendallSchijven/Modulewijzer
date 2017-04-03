@@ -1,0 +1,89 @@
+﻿@using System.Data;
+@using System.Data.SqlClient;
+@using Modulewijzer.Models;
+@using Modulewijzer.DataAccess;
+@{
+    Page.Title = "Docent aanpassen";
+    Layout = "_Layout.cshtml";
+
+    Validation.RequireField("Voorletters", "Je moet voorletters toevoegen");
+    Validation.RequireField("Achternaam", "Je moet een achternaam toevoegen");
+
+    int docentId = 0;
+    string voorletters = "";
+    string achternaam = "";
+    string tussenvoegsel = "";
+
+    if (!Request.QueryString["docentId"].IsEmpty())
+    {
+        docentId = Convert.ToInt32(Request.QueryString["docentId"]);
+        using (var connection = new SqlConnection(DbConnection.ConnectionString))
+        {
+            connection.Open();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT Voorletters, Achternaam, Tussenvoegsel FROM Docenten  WHERE DocentId = @docentId";
+                command.Parameters.AddWithValue("@docentId", docentId);
+                command.ExecuteNonQuery();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        voorletters = reader.GetString(0);
+                        achternaam = reader.GetString(1);
+                        tussenvoegsel = reader.GetString(2);
+                    }
+                }
+
+            }
+            connection.Close();
+        }
+    }
+    else { Response.Redirect("Docenten"); }
+
+    if (IsPost && Validation.IsValid())
+    {
+        var docent = new Docent()
+        {
+            Id = docentId,
+            Voorletters = Request.Form["Voorletters"],
+            Achternaam = Request.Form["Achternaam"],
+            Tussenvoegsel = Request.Form["Tussenvoegsel"]
+        };
+
+        DbConnection.Instance.Docenten.Update(docent);
+        Response.Redirect("Docenten");
+    }
+}
+
+<div class="row">
+    <div class="col-md-5 portfolio-item">
+        <form class="form-horizontal" method="post">
+            <div class="form-group">
+                <h3>Docent aanpassen</h3>
+            </div>
+
+            <div class="form-group">
+                <label for="Voorletters">Voorletters<span style="color: red;">*@Html.ValidationMessage("Voorletters")</span></label><br>
+                <input type="text" id="Voorletters" name="Voorletters" placeholder="J.J" value="@voorletters">
+            </div>
+
+            <div class="form-group">
+                <label for="Achternaam">Achternaam<span style="color: red;">*@Html.ValidationMessage("Achternaam")</span></label><br>
+                <input type="text" id="Achternaam" name="Achternaam" placeholder="De Boer" value="@achternaam">
+            </div>
+
+            <div class="form-group">
+                <label for="Tussenvoegsel">Tussenvoegsel</label><br>
+                <input type="text" id="Tussenvoegsel" name="Tussenvoegsel" placeholder="van" value="@tussenvoegsel">
+            </div>
+
+            <div class="form-group">
+                <a href="~/Docenten.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                <button type="submit" name="Docent_aanpassen" class="btn btn-primary" value="Docent_aanpassen"><i class="fa fa-user-plus" aria-hidden="true"></i> Docent aanpassen</button>
+            </div>
+        </form>
+    </div>
+</div>
