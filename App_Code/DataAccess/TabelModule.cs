@@ -64,7 +64,7 @@ namespace Modulewijzer.DataAccess
                     command.CommandText = "UPDATE [Modulewijzer] SET [Naam]=@Naam, [EC]=@AantalEcs, " +
                         "[Studiejaar]=@StudieJaar, [Periode]=@Periode, [Werkvorm]=@Werkvorm, " +
                         "[Leeruitkomsten]=@Leeruitkomsten, [Literatuur]=@Literatuur, [Planning]=@Planning " +
-                        "WHERE ModulewijzerId=@Id";
+                        "WHERE [ModulewijzerId]=@Id";
 
                     command.Parameters.AddRange(new SqlParameter[]
                     {

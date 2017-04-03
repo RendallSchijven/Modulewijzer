@@ -15,7 +15,7 @@
     string periode = "";
 }
 
-<div class="row">
+<div class="row" id="zoekbalk">
     <div class="col-md-6">
         <form method="get" class="form-horizontal" name="zoeken" action="~/Zoekresultaten.cshtml">
 
@@ -31,10 +31,8 @@
                     <option value="Studiejaar">Studiejaar</option>
                     <option value="Periode">Periode</option>
                 </select>
+                <br /><br /><button type="submit" name="zoeken" class="btn btn-primary" value="zoeken"><i class="fa fa-search"></i> Zoeken</button>
             </div>
-
-            <button type="submit" name="zoeken" class="btn btn-primary" value="zoeken"><i class="fa fa-search"></i> Zoeken</button>
-
         </form>
     </div>
 </div>

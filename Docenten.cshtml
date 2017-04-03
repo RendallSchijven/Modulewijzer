@@ -11,18 +11,10 @@
     string Voorletters = "";
     string Achternaam = "";
     string Tussenvoegsel = "";
-
-    //if (!Request.Form["Docent_verwijderen"].IsEmpty())
-    //{
-    //    DbConnection.Instance.Docenten.Delete(docentId);
-    //    Response.Redirect("Docenten");
-    //}
 }
 
-@*<form method="post" id="Docent_verwijderen"></form>*@
-
 <div class="table-responsive">
-    <h3>Leraren aan modulewijzer toevoegen</h3>
+    <h3>Docenten aan modulewijzer toevoegen</h3>
     <table class="table-bordered">
         <tr>
             <th>Achternaam</th>
@@ -51,8 +43,8 @@
                             <td>@Achternaam</td>
                             <td>@Voorletters</td>
                             <td>@Tussenvoegsel</td>
-                            <td><a href="Docent_verwijderen?docentId=@docentId">Verwijderen</a></td>
-                            @*<td><button type="submit" name="Docent_verwijderen" class="btn btn-danger" value="docentId" form="Docent_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</button></td>*@
+                            <td><a class="btn btn-primary" href="Docent_aanpassen?docentId=@docentId"><i class="fa fa-pencil" aria-hidden="true"></i> Aanpassen</a></td>
+                            <td><a class="btn btn-danger" href="Docent_verwijderen?docentId=@docentId"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</a></td>
                         </tr>
                     }
                 }
@@ -63,5 +55,5 @@
     </table>
     <br />
     <a href="~/Default.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
-    <a href="~/Leraar_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i>  Nieuwe leraar aanmaken</a>
+    <a href="~/Docent_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i>  Nieuwe Docent aanmaken</a>
 </div>

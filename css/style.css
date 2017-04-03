@@ -1,0 +1,38 @@
+body {
+    padding-top: 70px;
+    padding-bottom: 60px;
+}
+
+.portfolio-item {
+    margin-bottom: 25px;
+}
+
+footer {
+    margin: 50px 0;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 5px;
+    padding-right: 50px;
+}
+
+.navbar-default {
+    background-color: Lightgrey;
+}
+
+.footer {
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  background-color: Lightgrey;
+  position: absolute;
+  top: 100%;
+  margin-top: -60px;
+}

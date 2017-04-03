@@ -59,6 +59,7 @@ namespace Modulewijzer.DataAccess
 
                     command.Parameters.AddRange(new SqlParameter[]
                     {
+                        new SqlParameter("@Id" , SqlDbType.Int) {Value = row.Id },
                         new SqlParameter("@Naam", SqlDbType.NVarChar) { Value = row.Naam },
                         new SqlParameter("@Niveau", SqlDbType.Int) { Value = row.Niveau },
                         new SqlParameter("@Beschrijving", SqlDbType.NVarChar) { Value = row.Beschrijving }

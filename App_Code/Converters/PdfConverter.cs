@@ -65,12 +65,12 @@ namespace Modulewijzer.Converters
             m_doc.Add(new Paragraph(module.Literatuur));
             m_doc.Add(Chunk.NEWLINE);
             m_doc.Add(new Paragraph("Planning", _smallheader));
-            // Planning
+            m_doc.Add(new Paragraph(module.Planning));
         }
         public void AddDocent(Docent docent)
         {
 
-            // Leraar naar Pdf
+            // Docent naar Pdf
             // Gebruikt nu string ipv Docent object
             _docenten.Add(docent);
         }
