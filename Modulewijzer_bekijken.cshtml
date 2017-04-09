@@ -17,8 +17,10 @@
     string planning = "";
     string view_docent = "";
     string view_comp = "";
+    string view_besch = "";
     List<string> docenten = new List<string>();
-    List<string> competenties = new List<string>();
+    //List<string> competenties = new List<string>();
+    Dictionary<string, string> competenties = new Dictionary<string, string>();
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
@@ -61,7 +63,7 @@
             connection.Open();
 
             command.CommandText = "EXEC GetLinkedDocenten @ModuleId";
-            command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) {Value = ModulewijzerId});
+            command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = ModulewijzerId });
 
             using (var reader = command.ExecuteReader())
             {
@@ -94,7 +96,7 @@
                     string comp_naam = reader.GetString(1);
                     string niveau = Convert.ToString(reader.GetInt32(2));
                     string competentie_beschrijving = reader.GetString(3);
-                    competenties.Add($"{comp_naam} {niveau} {competentie_beschrijving} ");
+                    competenties.Add($"{comp_naam} {niveau}", $"{competentie_beschrijving}");
                 }
             }
 
@@ -121,7 +123,22 @@
     <b>Periode</b><br /><p>@periode</p>
     <b>Werkvorm</b><br /><p>@werkvorm</p>
     <b>Leeruitkomsten</b><br /><p>@leeruitkomsten</p>
-    <b>Competenties</b><br /><p>@foreach (string s in competenties) { view_comp = s; @view_comp <br />}</p>
+
+    @{int i = 0; }
+    <b>Competenties</b><br />
+        @foreach (KeyValuePair<string, string> s in competenties)
+        {
+            view_comp = s.Key;
+            view_besch = s.Value;
+                    <div>
+                        <a data-toggle="collapse" data-target="#competentie_@i" href="#competentie_@i">@view_comp</a>
+                    </div>
+                    <div id="competentie_@i" class="panel-collapse collapse out">
+                            @view_besch
+                    </div>
+            i++;
+        }
+
     <b>Literatuur</b><br /><p>@literatuur</p>
     <b>Planning</b><br /><p>@planning</p>
     <hr />
