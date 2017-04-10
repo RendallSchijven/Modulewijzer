@@ -11,8 +11,6 @@
     string Naam = "";
     int Niveau = 0;
     string Competentie_beschrijving = "";
-    int i = 0;
-    int j = 0;
 
     List<string> groepen = new List<string>();
 
@@ -40,7 +38,9 @@
 
 <div class="table-responsive">
     <h3>Competenties</h3><br />
-    @{ foreach (string s in groepen)
+    @{  int i = 0;
+        int j = 0;
+        foreach (string s in groepen)
         {
             <div>
                 <h4><a data-toggle="collapse" data-target="#groep_@j" href="#groep_@j">@s <i class="fa fa-caret-square-o-down" aria-hidden="true"></i></a></h4>

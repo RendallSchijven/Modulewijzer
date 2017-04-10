@@ -30,7 +30,7 @@
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
+                command.CommandText = "EXEC GetModuleData @ModulewijzerId";
                 command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
                 command.ExecuteNonQuery();
 
@@ -71,7 +71,7 @@
                     string voorletters = reader.GetString(1);
                     string achternaam = reader.GetString(2);
                     string tussenvoegsel = reader.GetString(3);
-                    docenten.Add($"{voorletters}. {tussenvoegsel} {achternaam} ");
+                    docenten.Add($"{voorletters}. {tussenvoegsel} {achternaam}, ");
                 }
             }
 

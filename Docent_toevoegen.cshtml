@@ -80,8 +80,7 @@
             {
                 connection.Open();
 
-                command.CommandText = "EXEC GetDocenten @ModuleId";
-                command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) {Value = ModulewijzerId});
+                command.CommandText = "EXEC GetDocenten";
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -107,6 +106,7 @@
                                     <td><button type="submit" class="btn btn-success" value="@docentId" form="Docent_toevoegen" name="toevoegen"><i class="fa fa-plus" aria-hidden="true"></i> Toevoegen</button></td>
                                 }
                             }
+                            <td><a class="btn btn-primary" href="Docent_aanpassen?docentId=@docentId&ModulewijzerId=@ModulewijzerId"><i class="fa fa-pencil" aria-hidden="true"></i> Aanpassen</a></td>
                         </tr>
                     }
                 }

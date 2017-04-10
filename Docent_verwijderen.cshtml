@@ -4,7 +4,19 @@
 @using System.Data;
 @using System.Data.SqlClient;
 @{
+    int ModulewijzerId = 0;
+
+    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    {
+        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+    }
+
     int docentId = Convert.ToInt32(Request.QueryString["docentId"]);
     DbConnection.Instance.Docenten.Delete(docentId);
+
+    if (ModulewijzerId != 0)
+    {
+        Response.Redirect($"Docent_toevoegen?ModulewijzerId={ModulewijzerId}");
+    }
     Response.Redirect("Docenten");
 }
