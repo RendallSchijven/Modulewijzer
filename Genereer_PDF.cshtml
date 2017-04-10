@@ -13,6 +13,12 @@
     string literatuur = "";
     string planning = "";
 
+    // Maak mapje als er nog geen mapje is
+    if (Directory.GetDirectories(HttpRuntime.AppDomainAppPath, "PDF").Length == 0)
+    {
+        Directory.CreateDirectory($"{HttpRuntime.AppDomainAppPath}\\PDF");
+    }
+
     // Script zet nu eerst DB om naar Module
 
     int ModulewijzerId = 0;
@@ -20,7 +26,7 @@
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
-        using (var pdfConverter = new PdfConverter($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/git/Modulewijzer/PDF/Module{ModulewijzerId}.pdf"))
+        using (var pdfConverter = new PdfConverter($"{HttpRuntime.AppDomainAppPath}\\PDF\\Module{ModulewijzerId}.pdf"))
         {
             using (var connection = new SqlConnection(DbConnection.ConnectionString))
             {

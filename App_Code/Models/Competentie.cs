@@ -24,5 +24,10 @@
         /// Gets or sets this competentie's description.
         /// </summary>
         public string Beschrijving { get; set; }
+
+        /// <summary>
+        /// Gets or sets this competentie's group.
+        /// </summary>
+        public string Groep { get; set; }
     }
 }

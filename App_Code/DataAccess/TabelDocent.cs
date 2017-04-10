@@ -30,7 +30,7 @@ namespace Modulewijzer.DataAccess
 
                     command.Parameters.AddRange(new SqlParameter[]
                     {
-                        new SqlParameter("@Voorletters", SqlDbType.NVarChar) { Value = row.Voorletters },
+                        new SqlParameter("@Voorletters", SqlDbType.NVarChar) { Value = row.Voorletters.ToUpper() },
                         new SqlParameter("@Achternaam", SqlDbType.NVarChar) { Value = row.Achternaam },
                         new SqlParameter("@Tussenvoegsel", SqlDbType.NVarChar) { Value = row.Tussenvoegsel }
                     });

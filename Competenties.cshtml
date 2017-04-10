@@ -11,50 +11,94 @@
     string Naam = "";
     int Niveau = 0;
     string Competentie_beschrijving = "";
-}
+    int i = 0;
+    int j = 0;
 
-<div class="table-responsive">
-    <h3>Competenties</h3>
-    <table class="table-bordered">
-        <tr>
-            <th>Naam</th>
-            <th>Niveau</th>
-            <th>Beschrijving</th>
-        </tr>
-        @{using (var connection = new SqlConnection(DbConnection.ConnectionString))
+    List<string> groepen = new List<string>();
+
+    using (var connection = new SqlConnection(DbConnection.ConnectionString))
+    {
+        using (var command = connection.CreateCommand())
+        {
+            connection.Open();
+
+            command.CommandText = "EXEC GetGroepen";
+
+            using (var reader = command.ExecuteReader())
             {
-                using (var command = connection.CreateCommand())
+                while (reader.Read())
                 {
-                    connection.Open();
-
-                    command.CommandText = "EXEC GetCompetenties @ModuleId";
-                    command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = 0 });
-
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            CompetentieId = reader.GetInt32(0);
-                            Naam = reader.GetString(1);
-                            Niveau = reader.GetInt32(2);
-                            Competentie_beschrijving = reader.GetString(3);
-
-                            <tr>
-                                <td>@Naam</td>
-                                <td>@Niveau</td>
-                                <td>@Competentie_beschrijving</td>
-                                <td><a class="btn btn-primary" href="Competentie_aanpassen?CompetentieId=@CompetentieId"><i class="fa fa-pencil" aria-hidden="true"></i> Aanpassen</a></td>
-                                <td><a class="btn btn-danger" href="Competentie_verwijderen?CompetentieId=@CompetentieId"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</a></td>
-                            </tr>
-                            }
-                        }
-
-                    }
-                    connection.Close();
+                    groepen.Add(reader.GetString(0));
                 }
             }
-    </table>
+
+        }
+        connection.Close();
+    }
+}
+
+
+<div class="table-responsive">
+    <h3>Competenties</h3><br />
+    @{ foreach (string s in groepen)
+        {
+            <div>
+                <h4><a data-toggle="collapse" data-target="#groep_@j" href="#groep_@j">@s <i class="fa fa-caret-square-o-down" aria-hidden="true"></i></a></h4>
+            </div>
+            <div id="groep_@j" class="panel-collapse collapse out">
+                <table class="table-bordered">
+                    <tr>
+                        <th>Naam</th>
+                        <th>Niveau</th>
+                        <th>Beschrijving</th>
+                    </tr>
+                    @{using (var connection = new SqlConnection(DbConnection.ConnectionString))
+                        {
+                            using (var command = connection.CreateCommand())
+                            {
+                                connection.Open();
+
+                                command.CommandText = "EXEC GetCompetenties @Groep";
+                                command.Parameters.Add(new SqlParameter("@Groep", SqlDbType.NVarChar) { Value = s });
+
+
+                                using (var reader = command.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        CompetentieId = reader.GetInt32(0);
+                                        Naam = reader.GetString(1);
+                                        Niveau = reader.GetInt32(2);
+                                        Competentie_beschrijving = reader.GetString(3);
+
+                                        <tr>
+                                            <td>@Naam</td>
+                                            <td>@Niveau</td>
+                                            <td>
+                                                <div>
+                                                    <a data-toggle="collapse" data-target="#beschrijving_@i" href="#beschrijving_@i">Bekijken <i class="fa fa-caret-square-o-down" aria-hidden="true"></i></a>
+                                                </div>
+                                                <div id="beschrijving_@i" class="panel-collapse collapse out">
+                                                    @Competentie_beschrijving
+                                                </div>
+                                            </td>
+                                            <td><a class="btn btn-primary" href="Competentie_aanpassen?CompetentieId=@CompetentieId"><i class="fa fa-pencil" aria-hidden="true"></i> Aanpassen</a></td>
+                                            <td><a class="btn btn-danger" href="Competentie_verwijderen?CompetentieId=@CompetentieId"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</a></td>
+                                        </tr>
+                                        i++;
+                                    }
+                                    j++;
+                                }
+
+                            }
+                            connection.Close();
+                        }
+                    }
+                </table>
+            </div>
+            <br />
+            }
+     }
     <br />
     <a href="~/Default.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>  Terug</a>
     <a href="~/Competentie_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-plus-square" aria-hidden="true"></i>  Nieuwe competentie aanmaken</a>
