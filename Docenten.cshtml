@@ -14,7 +14,7 @@
 }
 
 <div class="table-responsive">
-    <h3>Docenten aan modulewijzer toevoegen</h3>
+    <h3>Docenten</h3>
     <table class="table-bordered">
         <tr>
             <th>Achternaam</th>
@@ -27,8 +27,7 @@
             {
                 connection.Open();
 
-                command.CommandText = "EXEC GetDocenten @ModuleId";
-                command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = 0 });
+                command.CommandText = "EXEC GetDocenten";
 
                 using (var reader = command.ExecuteReader())
                 {

@@ -10,9 +10,15 @@
     Validation.RequireField("Achternaam", "Je moet een achternaam toevoegen");
 
     int docentId = 0;
+    int ModulewijzerId = 0;
     string voorletters = "";
     string achternaam = "";
     string tussenvoegsel = "";
+
+    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    {
+        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+    }
 
     if (!Request.QueryString["docentId"].IsEmpty())
     {
@@ -23,7 +29,7 @@
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT Voorletters, Achternaam, Tussenvoegsel FROM Docenten  WHERE DocentId = @docentId";
+                command.CommandText = "EXEC GetDocent @docentId";
                 command.Parameters.AddWithValue("@docentId", docentId);
                 command.ExecuteNonQuery();
 
@@ -54,6 +60,11 @@
         };
 
         DbConnection.Instance.Docenten.Update(docent);
+
+        if(ModulewijzerId != 0)
+        {
+            Response.Redirect($"Docent_toevoegen?ModulewijzerId={ModulewijzerId}");
+        }
         Response.Redirect("Docenten");
     }
 }
@@ -81,8 +92,16 @@
             </div>
 
             <div class="form-group">
-                <a href="~/Docenten.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                @if (ModulewijzerId != 0)
+                {
+                    <a href="Docent_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                }
+                else
+                {
+                    <a href="~/Docenten.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                }
                 <button type="submit" name="Docent_aanpassen" class="btn btn-primary" value="Docent_aanpassen"><i class="fa fa-user-plus" aria-hidden="true"></i> Docent aanpassen</button>
+                <a class="btn btn-danger" href="Docent_verwijderen?docentId=@docentId&ModulewijzerId=@ModulewijzerId"><i class="fa fa-trash" aria-hidden="true"></i> Docent verwijderen</a>
             </div>
         </form>
     </div>

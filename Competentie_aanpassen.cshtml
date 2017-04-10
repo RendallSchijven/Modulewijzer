@@ -32,7 +32,7 @@
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT Naam, Niveau, Competentie_beschrijving, Competentie_groep FROM Competenties  WHERE CompetentieId = @competentieId";
+                command.CommandText = "EXEC GetCompetentie @competentieId";
                 command.Parameters.AddWithValue("@competentieId", competentieId);
                 command.ExecuteNonQuery();
 

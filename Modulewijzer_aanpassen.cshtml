@@ -30,7 +30,7 @@
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
+                command.CommandText = "EXEC GetModuleData @ModulewijzerId";
                 command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
                 command.ExecuteNonQuery();
 

@@ -52,7 +52,7 @@
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT ModulewijzerId, Naam, EC, Studiejaar, Periode FROM Modulewijzer";
+                command.CommandText = "EXEC GetModules";
 
                 using (var reader = command.ExecuteReader())
                 {

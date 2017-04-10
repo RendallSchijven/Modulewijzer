@@ -59,6 +59,7 @@
 <div class="table-responsive">
     <h3>Resultaten voor @zoektype: @zoekterm</h3>
     <h2>Modules</h2>
+    @{var modules = new TabelModule().Search(term);
     <table class="table-bordered">
         <tr>
             <th>Naam</th>
@@ -66,8 +67,7 @@
             <th>Studiejaar</th>
             <th>Periode</th>
         </tr>
-        @{var modules = new TabelModule().Search(term);
-            foreach (var module in modules)
+            @foreach (var module in modules)
             {
                 ModulewijzerId = module.Id;
                 naam = module.Naam;
@@ -81,9 +81,14 @@
                     <td>@periode</td>
                     <td><a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-eye"></i> Openen</a></td>
                 </tr>
-            }
-        }
+                }
+            
     </table>
+        if (modules.Count <= 0)
+        {
+            <h3>Geen resultaten</h3>
+        }
+     }
     <br>
     <a href="Default" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
 </div>
