@@ -6,14 +6,22 @@
     Page.Title = "Competentie aanpassen";
     Layout = "_Layout.cshtml";
 
+    Validation.RequireField("Groep", "Je moet een groep selecteren");
     Validation.RequireField("Naam", "Je moet naam toevoegen");
     Validation.RequireField("Niveau", "Je moet een niveau toevoegen");
     Validation.RequireField("Beschrijving", "Je moet een beschrijving toevoegen");
 
     int competentieId = 0;
+    int ModulewijzerId = 0;
     string naam = "";
     int niveau = 0;
     string competentie_beschrijving = "";
+    string competentie_groep = "";
+
+    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    {
+        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+    }
 
     if (!Request.QueryString["CompetentieId"].IsEmpty())
     {
@@ -24,7 +32,7 @@
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT Naam, Niveau, Competentie_beschrijving FROM Competenties  WHERE CompetentieId = @competentieId";
+                command.CommandText = "SELECT Naam, Niveau, Competentie_beschrijving, Competentie_groep FROM Competenties  WHERE CompetentieId = @competentieId";
                 command.Parameters.AddWithValue("@competentieId", competentieId);
                 command.ExecuteNonQuery();
 
@@ -35,6 +43,7 @@
                         naam = reader.GetString(0);
                         niveau = reader.GetInt32(1);
                         competentie_beschrijving = reader.GetString(2);
+                        competentie_groep = reader.GetString(3);
                     }
                 }
 
@@ -51,11 +60,16 @@
             Id = competentieId,
             Naam = Request.Form["Naam"],
             Niveau = Convert.ToInt32(Request.Form["Niveau"]),
-            Beschrijving = Request.Form["Beschrijving"]
+            Beschrijving = Request.Form["Beschrijving"],
+            Groep = Request.Form["Groep"]
         };
 
         DbConnection.Instance.Competentie.Update(competentie);
-        Response.Redirect("Competenties");
+        if(ModulewijzerId != 0)
+        {
+            Response.Redirect($"Competentie_toevoegen?ModulewijzerId={@ModulewijzerId}");
+        }
+        else { Response.Redirect("Competenties"); }
     }
 }
 
@@ -64,6 +78,16 @@
         <form class="form-horizontal" method="post">
             <div class="form-group">
                 <h3>Competentie aanpassen</h3>
+            </div>
+
+            <div class="form-group">
+                <label for="Groep">Groep<span style="color: red;">*@Html.ValidationMessage("Groep")</span></label><br>
+                Huidig = @competentie_groep<br />
+                Nieuw: <select id="Groep" name="Groep">
+                    <option value="Software">Software</option>
+                    <option value="Befrijfsprocessen">Befrijfsprocessen</option>
+                    <option value="Gebruikersinteractie">Gebruikersinteractie</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -90,12 +114,13 @@
 
             <div class="form-group">
                 <label for="Beschrijving">Beschrijving<span style="color: red">*@Html.ValidationMessage("Beschrijving")</span></label><br>
-                <input type="text" id="Beschrijving" name="Beschrijving" value="@competentie_beschrijving">
+                <textarea id="Beschrijving" name="Beschrijving" style="width: 350px; height: 150px;">@competentie_beschrijving</textarea>
             </div>
 
             <div class="form-group">
-                <a href="~/Competenties.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                <a href="~/Competentie_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
                 <button type="submit" name="Competentie_aanmaken" class="btn btn-primary" value="Competentie_toevoegen"><i class="fa fa-plus-square" aria-hidden="true"></i> Competentie aanpassen</button>
+                <a class="btn btn-danger" href="Competentie_verwijderen?CompetentieId=@competentieId&ModulewijzerId=@ModulewijzerId"><i class="fa fa-trash" aria-hidden="true"></i> Competentie verwijderen</a>
             </div>
         </form>
     </div>

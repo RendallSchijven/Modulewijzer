@@ -19,7 +19,6 @@
     string view_comp = "";
     string view_besch = "";
     List<string> docenten = new List<string>();
-    //List<string> competenties = new List<string>();
     Dictionary<string, string> competenties = new Dictionary<string, string>();
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
@@ -131,7 +130,7 @@
             view_comp = s.Key;
             view_besch = s.Value;
                     <div>
-                        <a data-toggle="collapse" data-target="#competentie_@i" href="#competentie_@i">@view_comp</a>
+                        <a data-toggle="collapse" data-target="#competentie_@i" href="#competentie_@i">@view_comp <i class="fa fa-caret-square-o-down" aria-hidden="true"></i></a>
                     </div>
                     <div id="competentie_@i" class="panel-collapse collapse out">
                             @view_besch

@@ -5,6 +5,7 @@
     Layout = "_Layout.cshtml";
     Page.title = "Competentie aanmaken";
 
+    Validation.RequireField("Groep", "Je moet een groep selecteren");
     Validation.RequireField("Naam", "Je moet naam toevoegen");
     Validation.RequireField("Niveau", "Je moet een niveau toevoegen");
     Validation.RequireField("Beschrijving", "Je moet een beschrijving toevoegen");
@@ -27,7 +28,8 @@
         {
             Naam = Request.Form["Naam"],
             Niveau = Convert.ToInt32(Request.Form["Niveau"]),
-            Beschrijving = Request.Form["Beschrijving"]
+            Beschrijving = Request.Form["Beschrijving"],
+            Groep = Request.Form["Groep"]
         };
 
         DbConnection.Instance.Competentie.Create(competentie);
@@ -45,6 +47,15 @@
         <form class="form-horizontal" method="post">
             <div class="form-group">
                 <h3>Nieuwe competentie aanmaken</h3>
+            </div>
+
+            <div class="form-group">
+                <label for="Groep">Groep<span style="color: red;">*@Html.ValidationMessage("Groep")</span></label><br>
+                <select id="Groep" name="Groep">
+                    <option value="Software">Software</option>
+                    <option value="Befrijfsprocessen">Befrijfsprocessen</option>
+                    <option value="Gebruikersinteractie">Gebruikersinteractie</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -69,7 +80,7 @@
 
             <div class="form-group">
                 <label for="Beschrijving">Beschrijving<span style="color: red">*@Html.ValidationMessage("Beschrijving")</span></label><br>
-                <input type="text" id="Beschrijving" name="Beschrijving">
+                <textarea id="Beschrijving" name="Beschrijving" style="width: 350px; height: 150px;"></textarea>
             </div>
 
             <div class="form-group">

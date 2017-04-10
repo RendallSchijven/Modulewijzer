@@ -25,14 +25,15 @@ namespace Modulewijzer.DataAccess
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "INSERT INTO [Competenties] ([Naam], [Niveau], [Competentie_beschrijving]) VALUES" +
-                        "(@Naam, @Niveau, @Beschrijving)";
+                    command.CommandText = "INSERT INTO [Competenties] ([Naam], [Niveau], [Competentie_beschrijving], [Competentie_groep]) VALUES" +
+                        "(@Naam, @Niveau, @Beschrijving, @Groep)";
 
                     command.Parameters.AddRange(new SqlParameter[]
                     {
                         new SqlParameter("@Naam", SqlDbType.NVarChar) { Value = row.Naam },
                         new SqlParameter("@Niveau", SqlDbType.Int) { Value = row.Niveau },
-                        new SqlParameter("@Beschrijving", SqlDbType.NVarChar) { Value = row.Beschrijving }
+                        new SqlParameter("@Beschrijving", SqlDbType.NVarChar) { Value = row.Beschrijving },
+                        new SqlParameter("@Groep", SqlDbType.NVarChar) { Value = row.Groep }
                     });
 
                     command.ExecuteNonQuery();
@@ -55,14 +56,15 @@ namespace Modulewijzer.DataAccess
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "UPDATE [Competenties] SET [Naam]=@Naam, [Niveau]=@Niveau, " +
-                        "[Competentie_beschrijving]=@Beschrijving WHERE [CompetentieId]=@Id";
+                        "[Competentie_beschrijving]=@Beschrijving, [Competentie_groep]=@Groep WHERE [CompetentieId]=@Id";
 
                     command.Parameters.AddRange(new SqlParameter[]
                     {
                         new SqlParameter("@Id" , SqlDbType.Int) {Value = row.Id },
                         new SqlParameter("@Naam", SqlDbType.NVarChar) { Value = row.Naam },
                         new SqlParameter("@Niveau", SqlDbType.Int) { Value = row.Niveau },
-                        new SqlParameter("@Beschrijving", SqlDbType.NVarChar) { Value = row.Beschrijving }
+                        new SqlParameter("@Beschrijving", SqlDbType.NVarChar) { Value = row.Beschrijving },
+                        new SqlParameter("@Groep", SqlDbType.NVarChar) { Value = row.Groep }
                     });
 
                     command.ExecuteNonQuery();

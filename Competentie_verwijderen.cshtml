@@ -4,7 +4,19 @@
 @using System.Data;
 @using System.Data.SqlClient;
 @{
+    int ModulewijzerId = 0;
+
+    if (!Request.QueryString["ModulewijzerId"].IsEmpty())
+    {
+        ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
+    }
+
     int CompetentieId = Convert.ToInt32(Request.QueryString["CompetentieId"]);
     DbConnection.Instance.Competentie.Delete(CompetentieId);
+
+    if(ModulewijzerId != 0)
+    {
+        Response.Redirect($"Competentie_toevoegen?ModulewijzerId={ModulewijzerId}");
+    }
     Response.Redirect("Competenties");
 }
