@@ -2,6 +2,11 @@
 @using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
 @{
+    if (!Beveiliging.IsAuthenticated())
+    {
+        Response.Redirect("Default");
+    }
+
     Layout = "_Layout.cshtml";
     Page.title = "Competentie aanmaken";
 
@@ -46,7 +51,7 @@
     <div class="col-md-5 portfolio-item">
         <form class="form-horizontal" method="post">
             <div class="form-group">
-                <h3>Nieuwe competentie aanmaken</h3>
+                <h3 class="page-header">Nieuwe competentie aanmaken</h3>
             </div>
 
             <div class="form-group">

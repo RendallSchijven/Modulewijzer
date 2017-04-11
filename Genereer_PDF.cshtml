@@ -1,19 +1,9 @@
-﻿@using System.Data;
-@using System.Data.SqlClient;
+﻿@using System.Data.SqlClient;
 @using Modulewijzer.Models;
 @using Modulewijzer.DataAccess;
 @using Modulewijzer.Converters;
 @{
-    string naam = "";
-    int EC = 0;
-    int studiejaar = 0;
-    int periode = 0;
-    string werkvorm = "";
-    string leeruitkomsten = "";
-    string literatuur = "";
-    string planning = "";
-
-    // Maak mapje als er nog geen mapje is
+    // Maak map als er nog geen map is
     if (Directory.GetDirectories(HttpRuntime.AppDomainAppPath, "PDF").Length == 0)
     {
         Directory.CreateDirectory($"{HttpRuntime.AppDomainAppPath}\\PDF");
@@ -34,27 +24,9 @@
 
                 using (var command = connection.CreateCommand())
                 {
-                    // Module
-                    command.CommandText = "SELECT Naam, EC, Studiejaar, Periode, Werkvorm, Leeruitkomsten, Literatuur, Planning FROM Modulewijzer  WHERE ModulewijzerId = @ModulewijzerId";
                     command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
-                    command.ExecuteNonQuery();
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            naam = reader.GetString(0);
-                            EC = reader.GetInt32(1);
-                            studiejaar = reader.GetInt32(2);
-                            periode = reader.GetInt32(3);
-                            werkvorm = reader.GetString(4);
-                            leeruitkomsten = reader.GetString(5);
-                            literatuur = reader.GetString(6);
-                            planning = reader.GetString(7);
-                        }
-                    }
-
-                    command.CommandText = "SELECT Voorletters, Achternaam FROM Docenten WHERE DocentId IN (SELECT DocentId FROM ModuleDocent WHERE ModuleId = @ModulewijzerId)";
+                    command.CommandText = "EXEC GetLinkedDocenten @ModulewijzerId";
                     command.ExecuteNonQuery();
 
                     using (var reader = command.ExecuteReader())
@@ -63,14 +35,15 @@
                         {
                             Docent d = new Docent()
                             {
-                                Voorletters = reader.GetString(0),
-                                Achternaam = reader.GetString(1)
+                                Voorletters = reader.GetString(1),
+                                Achternaam = reader.GetString(2),
+                                Tussenvoegsel = reader.GetString(3)
                             };
                             pdfConverter.AddDocent(d);
                         }
                     }
 
-                    command.CommandText = "SELECT Naam, Niveau FROM Competenties WHERE CompetentieId IN (SELECT CompetentieId FROM ModuleCompetentie WHERE ModuleId = @ModulewijzerId)";
+                    command.CommandText = "EXEC GetLinkedCompetenties @ModulewijzerId";
                     command.ExecuteNonQuery();
 
                     using (var reader = command.ExecuteReader())
@@ -79,8 +52,8 @@
                         {
                             Competentie c = new Competentie()
                             {
-                                Naam = reader.GetString(0),
-                                Niveau = reader.GetInt32(1)
+                                Naam = reader.GetString(1),
+                                Niveau = reader.GetInt32(2)
                             };
                             pdfConverter.AddCompetentie(c);
                         }
@@ -88,25 +61,13 @@
 
                 }
                 connection.Close();
-                Module module = new Module()
-                {
-                    Naam = naam,
-                    AantalEcs = EC,
-                    StudieJaar = studiejaar,
-                    Periode = periode,
-                    Werkvorm = werkvorm,
-                    Leeruitkomsten = leeruitkomsten,
-                    Literatuur = literatuur,
-                    Planning = planning
-                };
-                pdfConverter.AddModule(module);
+
             }
+
+            //Module
+            pdfConverter.AddModule(DbConnection.Instance.Module.GetById(ModulewijzerId));
         }
 
         Response.Redirect("PDF/Module" + ModulewijzerId + ".pdf");
-
-        //Write("<script>window.open('PDF/Module" + ModulewijzerId + ".pdf','_blank');</script>");
-        //Response.Redirect($"Modulewijzer_bekijken?ModulewijzerId={ModulewijzerId}");
     }
-
 }

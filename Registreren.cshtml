@@ -1,0 +1,59 @@
+﻿@{
+    Page.Title = "Registreren";
+    Layout = "_Layout.cshtml";
+
+    if (Beveiliging.IsAuthenticated())
+    {
+        Response.Redirect("Default");
+    }
+
+    string error = "";
+
+    if (IsPost && !Request.Form["register"].IsEmpty() && Request.QueryString["user_link"].IsEmpty())
+    {
+        //Validation
+        Validation.RequireField("Afkorting", "Je moet een afkorting invoeren");
+        Validation.RequireField("Wachtwoord", "Je moet een wachtwoord invoeren");
+        if (Validation.IsValid())
+        {
+            var Afkorting = Request.Form["Afkorting"];
+            var Wachtwoord = Request.Form["Wachtwoord"];
+
+            error = Beveiliging.CreateAccount(Afkorting, Wachtwoord);
+        }
+
+    }
+}
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h1 class="page-header header">Registreren</h1>
+        <center><img src="https://www.telindus.nl/wp-content/uploads/2015/05/Logo-NHL-Hogeschool.png" alt="Logo" style="width:12vw;height:12vw;" /></center>
+        <form class="form-horizontal" method="post">
+            @if (error != "")
+            {
+                <div class="alert alert-danger form-group">
+                    <strong>Error:</strong> @error
+                </div>
+            }
+            <div class="form-group">
+                <label for="Afkorting">Afkorting</label>
+                <span style="color: red;">*@Html.ValidationMessage("Afkorting")</span>
+                <input type="text" class="form-control" id="Afkorting" name="Afkorting" value="@Request.Form["Afkorting"] " placeholder="Afkorting">
+            </div>
+
+            <div class="form-group">
+                <label for="Wachtwoord">Wachtwoord</label>
+                <span style="color: red;">*@Html.ValidationMessage("Wachtwoord")</span>
+                <input type="password" class="form-control" id="Wachtwoord" name="Wachtwoord" placeholder="Wachtwoord">
+            </div>
+
+            <div class="form-group">
+                <a href="~/Inloggen.cshtml" class="btn btn-primary" role="button">Terug</a>
+                <button type="submit" name="register" class="btn btn-success" value="Register" style="float:right;">Registreren</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4"></div>
+</div>

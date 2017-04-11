@@ -1,10 +1,15 @@
-﻿@using System.Data;
-@using System.Data.SqlClient;
-@using Modulewijzer.Models;
+﻿@using Modulewijzer.Models;
 @using Modulewijzer.DataAccess;
 @{
     Layout = "_Layout.cshtml";
     Page.title = "Modulewijzer";
+
+    bool ingelogd = true;
+
+    if (!Beveiliging.IsAuthenticated())
+    {
+        ingelogd = false;
+    }
 
     int ModulewijzerId = 0;
     string naam = "";
@@ -18,90 +23,29 @@
     string view_docent = "";
     string view_comp = "";
     string view_besch = "";
+
     List<string> docenten = new List<string>();
     Dictionary<string, string> competenties = new Dictionary<string, string>();
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
-        using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "EXEC GetModuleData @ModulewijzerId";
-                command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
-                command.ExecuteNonQuery();
+        Module module = DbConnection.Instance.Module.GetById(ModulewijzerId);
 
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        naam = reader.GetString(0);
-                        EC = Convert.ToString(reader.GetInt32(1));
-                        studiejaar = Convert.ToString(reader.GetInt32(2));
-                        periode = Convert.ToString(reader.GetInt32(3));
-                        werkvorm = reader.GetString(4);
-                        leeruitkomsten = reader.GetString(5);
-                        literatuur = reader.GetString(6);
-                        planning = reader.GetString(7);
-                    }
-                }
-
-            }
-            connection.Close();
-        }
+        naam = module.Naam;
+        EC = Convert.ToString(module.AantalEcs);
+        studiejaar = Convert.ToString(module.StudieJaar);
+        periode = Convert.ToString(module.Periode);
+        werkvorm = module.Werkvorm;
+        leeruitkomsten = module.Leeruitkomsten;
+        literatuur = module.Literatuur;
+        planning = module.Planning;
     }
     else { Response.Redirect("Default"); }
 
-    using (var connection = new SqlConnection(DbConnection.ConnectionString))
-    {
-        using (var command = connection.CreateCommand())
-        {
-            connection.Open();
-
-            command.CommandText = "EXEC GetLinkedDocenten @ModuleId";
-            command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = ModulewijzerId });
-
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    string voorletters = reader.GetString(1);
-                    string achternaam = reader.GetString(2);
-                    string tussenvoegsel = reader.GetString(3);
-                    docenten.Add($"{voorletters}. {tussenvoegsel} {achternaam}, ");
-                }
-            }
-
-        }
-        connection.Close();
-    }
-
-    using (var connection = new SqlConnection(DbConnection.ConnectionString))
-    {
-        using (var command = connection.CreateCommand())
-        {
-            connection.Open();
-
-            command.CommandText = "EXEC GetLinkedCompetenties @ModuleId";
-            command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = ModulewijzerId });
-
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    string comp_naam = reader.GetString(1);
-                    string niveau = Convert.ToString(reader.GetInt32(2));
-                    string competentie_beschrijving = reader.GetString(3);
-                    competenties.Add($"{comp_naam} {niveau}", $"{competentie_beschrijving}");
-                }
-            }
-
-        }
-        connection.Close();
-    }
+    docenten = DbConnection.Instance.Module.GetLinkedDocenten(ModulewijzerId);
+    competenties = DbConnection.Instance.Module.GetLinkedCompetenties(ModulewijzerId);
 
     if (!Request.Form["Modulewijzer_verwijderen"].IsEmpty())
     {
@@ -112,9 +56,8 @@
 
 <form method="post" id="Modulewijzer_verwijderen"></form>
 
-
 <div>
-    <h2>Modulewijzer</h2>
+    <h2 class="page-header">Modulewijzer</h2>
     <b>Naam</b><br /><p>@naam</p>
     <b>Docenten</b><br /><p>@foreach (string s in docenten) { view_docent = s; @view_docent}</p>
     <b>EC's</b><br /><p>@EC</p>
@@ -137,18 +80,25 @@
                     </div>
             i++;
         }
+    <br />
 
     <b>Literatuur</b><br /><p>@literatuur</p>
     <b>Planning</b><br /><p>@planning</p>
     <hr />
     <a href="Default" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
-    <a href="Genereer_PDF.cshtml?ModulewijzerId=@ModulewijzerId" class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Maak PDF</a>
-    <div style="float:right;">
-        <p>
-            <a href="Competentie_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-plus" aria-hidden="true"></i> Competentie toevoegen</a>
-            <a href="Docent_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i> Docent toevoegen</a>
-            <a href="Modulewijzer_aanpassen?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-pencil" aria-hidden="true"></i> Module aanpassen</a>
-            <button type="submit" name="Modulewijzer_verwijderen" class="btn btn-danger" value="@ModulewijzerId" form="Modulewijzer_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Module verwijderen</button>
-        </p>
-    </div>
+    <a href="Genereer_PDF.cshtml?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Maak PDF</a>
+
+    @{
+        if (ingelogd == true)
+        {
+            <div style="float:right;">
+                <p>
+                    <a href="Competentie_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-plus" aria-hidden="true"></i> Competentie toevoegen</a>
+                    <a href="Docent_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-success" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i> Docent toevoegen</a>
+                    <a href="Modulewijzer_aanpassen?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-pencil" aria-hidden="true"></i> Module aanpassen</a>
+                    <button type="submit" name="Modulewijzer_verwijderen" class="btn btn-danger" value="@ModulewijzerId" form="Modulewijzer_verwijderen"><i class="fa fa-trash" aria-hidden="true"></i> Module verwijderen</button>
+                </p>
+            </div>
+        }
+    }
 </div>

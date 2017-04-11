@@ -1,10 +1,16 @@
 ﻿@using Modulewijzer.DataAccess;
 @using System;
-@using System.Data;
 @using System.Data.SqlClient;
 @{   
     Layout = "_Layout.cshtml";
     Page.title = "Home";
+
+    bool ingelogd = true;
+
+    if (!Beveiliging.IsAuthenticated())
+    {
+        ingelogd = false;
+    }
 
     Validation.RequireField("zoek", "Je moet zoekterm invoeren");
 
@@ -78,7 +84,8 @@
         }
     </table>
     <br>
-    <a href="~/Modulewijzer_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-plus"></i> Nieuwe modulewijzer</a>
+    @if (ingelogd == true)
+    {<a href="~/Modulewijzer_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-plus"></i> Nieuwe modulewijzer</a>}
     <a href="~/Docenten.cshtml" class="btn btn-primary" role="button"><i class="fa fa-eye"></i> Docenten</a>
     <a href="~/Competenties.cshtml" class="btn btn-primary" role="button"><i class="fa fa-eye"></i> Competenties</a>
 </div>

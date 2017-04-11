@@ -1,7 +1,11 @@
 ﻿@using Modulewijzer.Models;
 @using Modulewijzer.DataAccess;
-@using System.Data.SqlClient;
 @{
+    if (!Beveiliging.IsAuthenticated())
+    {
+        Response.Redirect("Default");
+    }
+
     Page.Title = "Docent aanmaken";
     Layout = "_Layout.cshtml";
 
@@ -43,7 +47,7 @@
     <div class="col-md-5 portfolio-item">
         <form class="form-horizontal" method="post">
             <div class="form-group">
-                <h3>Nieuwe Docent aanmaken</h3>
+                <h3 class="page-header">Nieuwe Docent aanmaken</h3>
             </div>
 
             <div class="form-group">

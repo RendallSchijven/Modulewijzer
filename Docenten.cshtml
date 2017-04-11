@@ -1,11 +1,15 @@
 ﻿@using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
-@using System;
-@using System.Data;
-@using System.Data.SqlClient;
 @{
     Page.Title = "Docenten";
     Layout = "_Layout.cshtml";
+
+    bool ingelogd = true;
+
+    if (!Beveiliging.IsAuthenticated())
+    {
+        ingelogd = false;
+    }
 
     int docentId = 0;
     string Voorletters = "";
@@ -14,7 +18,7 @@
 }
 
 <div class="table-responsive">
-    <h3>Docenten</h3>
+    <h3 class="page-header">Docenten</h3>
     <table class="table-bordered">
         <tr>
             <th>Achternaam</th>
@@ -42,8 +46,13 @@
                             <td>@Achternaam</td>
                             <td>@Voorletters</td>
                             <td>@Tussenvoegsel</td>
-                            <td><a class="btn btn-primary" href="Docent_aanpassen?docentId=@docentId"><i class="fa fa-pencil" aria-hidden="true"></i> Aanpassen</a></td>
-                            <td><a class="btn btn-danger" href="Docent_verwijderen?docentId=@docentId"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</a></td>
+                            @{
+                                if (ingelogd == true)
+                                {
+                                    <td><a class="btn btn-primary" href="Docent_aanpassen?docentId=@docentId"><i class="fa fa-pencil" aria-hidden="true"></i> Aanpassen</a></td>
+                                    <td><a class="btn btn-danger" href="Docent_verwijderen?docentId=@docentId"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</a></td>
+                                }
+                            }
                         </tr>
                     }
                 }
@@ -54,5 +63,6 @@
     </table>
     <br />
     <a href="~/Default.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
-    <a href="~/Docent_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i>  Nieuwe Docent aanmaken</a>
+    @if (ingelogd == true)
+    {<a href="~/Docent_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-user-plus" aria-hidden="true"></i>  Nieuwe Docent aanmaken</a>}
 </div>
