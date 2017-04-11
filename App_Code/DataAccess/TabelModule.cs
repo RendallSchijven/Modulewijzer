@@ -108,13 +108,129 @@ namespace Modulewijzer.DataAccess
         }
 
         /// <summary>
+        /// Gets the docenten linked to the module
+        /// </summary>
+        public List<string> GetLinkedDocenten(int Id)
+        {
+            List<string> docenten = new List<string>();
+
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    command.CommandText = "EXEC GetLinkedDocenten @ModuleId";
+                    command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = Id });
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string voorletters = reader.GetString(1);
+                            string achternaam = reader.GetString(2);
+                            string tussenvoegsel = reader.GetString(3);
+                            docenten.Add($"{voorletters}. {tussenvoegsel} {achternaam}, ");
+                        }
+                    }
+
+                }
+                connection.Close();
+            }
+            return docenten;
+        }
+
+        /// <summary>
+        /// Gets the competenties linked to the module
+        /// </summary>
+        public Dictionary<string, string> GetLinkedCompetenties(int Id)
+        {
+            Dictionary<string, string> competenties = new Dictionary<string, string>();
+
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    command.CommandText = "EXEC GetLinkedCompetenties @ModuleId";
+                    command.Parameters.Add(new SqlParameter("@ModuleId", SqlDbType.Int) { Value = Id });
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string comp_naam = reader.GetString(1);
+                            string niveau = Convert.ToString(reader.GetInt32(2));
+                            string competentie_beschrijving = reader.GetString(3);
+                            competenties.Add($"{comp_naam} {niveau}", $"{competentie_beschrijving}");
+                        }
+                    }
+
+                }
+                connection.Close();
+            }
+            return competenties;
+        }
+
+        /// <summary>
         /// Gets a module with the given ID from the database.
         /// </summary>
         /// <param name="id">The module's ID.</param>
         /// <returns></returns>
         public Module GetById(int id)
         {
-            throw new NotImplementedException();
+            string naam = "";
+            int EC = 0;
+            int studiejaar = 0;
+            int periode = 0;
+            string werkvorm = "";
+            string leeruitkomsten = "";
+            string literatuur = "";
+            string planning = "";
+
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "EXEC GetModuleData @ModulewijzerId";
+                    command.Parameters.AddWithValue("@ModulewijzerId", id);
+                    command.ExecuteNonQuery();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            naam = reader.GetString(0);
+                            EC = reader.GetInt32(1);
+                            studiejaar = reader.GetInt32(2);
+                            periode = reader.GetInt32(3);
+                            werkvorm = reader.GetString(4);
+                            leeruitkomsten = reader.GetString(5);
+                            literatuur = reader.GetString(6);
+                            planning = reader.GetString(7);
+                        }
+                    }
+
+                }
+                connection.Close();
+            }
+
+            var module = new Module()
+            {
+                Naam = naam,
+                AantalEcs = EC,
+                StudieJaar = studiejaar,
+                Periode = periode,
+                Werkvorm = werkvorm,
+                Leeruitkomsten = leeruitkomsten,
+                Literatuur = literatuur,
+                Planning = planning
+            };
+
+            return module;
         }
 
         public List<Module> Search(SearchTerm term)

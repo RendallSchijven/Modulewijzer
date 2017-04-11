@@ -2,8 +2,12 @@
 @using System.Data.SqlClient;
 @using System;
 @using System.Data;
-@using System.Data.SqlClient;
 @{
+    if (!Beveiliging.IsAuthenticated())
+    {
+        Response.Redirect("Default");
+    }
+
     Layout = "_Layout.cshtml";
     Page.title = "Competenties toevoegen";
 
@@ -14,7 +18,7 @@
     int Niveau = 0;
     string Competentie_beschrijving = "";
 
-    List<string> groepen = new List<string>();
+    List<string> groepen = new List<string>(DbConnection.Instance.Competentie.GetGroepen());
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
@@ -22,75 +26,24 @@
     }
     else { Response.Redirect("Default"); }
 
-    using (var connection = new SqlConnection(DbConnection.ConnectionString))
-    {
-        using (var command = connection.CreateCommand())
-        {
-            connection.Open();
-
-            command.CommandText = "EXEC GetGroepen";
-
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    groepen.Add(reader.GetString(0));
-                }
-            }
-
-        }
-        connection.Close();
-    }
-
     if (!Request.Form["toevoegen"].IsEmpty())
     {
-        using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "EXEC LinkCompetentie @ModulewijzerId, @CompetentieId";
-
-                command.Parameters.AddRange(new SqlParameter[]
-                {
-                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
-                        new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = Request.Form["toevoegen"] },
-                });
-
-                command.ExecuteNonQuery();
-            }
-            connection.Close();
-        }
+        int CompId = Convert.ToInt32(Request.Form["toevoegen"]);
+        DbConnection.Instance.Competentie.Toevoegen(ModulewijzerId, CompId);
     }
 
     if (!Request.Form["verwijderen"].IsEmpty())
     {
-        using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "EXEC DropLinkCompetentie @ModulewijzerId, @CompetentieId";
-
-                command.Parameters.AddRange(new SqlParameter[]
-                {
-                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
-                        new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = Request.Form["verwijderen"] },
-                });
-
-                command.ExecuteNonQuery();
-            }
-            connection.Close();
-        }
+        int CompId = Convert.ToInt32(Request.Form["verwijderen"]);
+        DbConnection.Instance.Competentie.Verwijderen(ModulewijzerId, CompId);
     }
 }
 
 <form method="post" id="Competentie_toevoegen"></form>
 <form method="post" id="Competentie_verwijderen"></form>
 
-
 <div class="table-responsive">
-    <h3>Competenties</h3><br />
+    <h3 class="page-header">Competenties</h3><br />
     @{  int i = 0;
         int j = 0;
         foreach (string s in groepen)

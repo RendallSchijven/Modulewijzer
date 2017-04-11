@@ -1,9 +1,12 @@
 ﻿@using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
 @using System;
-@using System.Data;
-@using System.Data.SqlClient;
 @{
+    if (!Beveiliging.IsAuthenticated())
+    {
+        Response.Redirect("Default");
+    }
+
     Layout = "_Layout.cshtml";
     Page.title = "Docent toevoegen";
 
@@ -22,44 +25,14 @@
 
     if (!Request.Form["toevoegen"].IsEmpty())
     {
-        using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "EXEC LinkDocent @ModulewijzerId, @DocentId";
-
-                command.Parameters.AddRange(new SqlParameter[]
-                {
-                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
-                        new SqlParameter("@DocentId", SqlDbType.Int) { Value = Request.Form["toevoegen"] },
-                });
-
-                command.ExecuteNonQuery();
-            }
-            connection.Close();
-        }
+        int docId = Convert.ToInt32(Request.Form["toevoegen"]);
+        DbConnection.Instance.Docenten.Toevoegen(ModulewijzerId, docId);
     }
 
     if (!Request.Form["verwijderen"].IsEmpty())
     {
-        using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "EXEC DropLinkDocenten @ModulewijzerId, @DocentId";
-
-                command.Parameters.AddRange(new SqlParameter[]
-                {
-                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
-                        new SqlParameter("@DocentId", SqlDbType.Int) { Value = Request.Form["verwijderen"] },
-                });
-
-                command.ExecuteNonQuery();
-            }
-            connection.Close();
-        }
+        int docId = Convert.ToInt32(Request.Form["verwijderen"]);
+        DbConnection.Instance.Docenten.Verwijderen(ModulewijzerId, docId);
     }
 }
 
@@ -67,7 +40,7 @@
 <form method="post" id="Docent_verwijderen"></form>
 
 <div class="table-responsive">
-    <h3>Docenten aan modulewijzer toevoegen</h3>
+    <h3 class="page-header">Docenten aan modulewijzer toevoegen</h3>
     <table class="table-bordered">
         <tr>
             <th>Achternaam</th>

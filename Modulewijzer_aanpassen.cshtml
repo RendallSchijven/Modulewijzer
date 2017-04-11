@@ -1,8 +1,11 @@
-﻿@using System.Data;
-@using System.Data.SqlClient;
-@using Modulewijzer.Models;
+﻿@using Modulewijzer.Models;
 @using Modulewijzer.DataAccess;
 @{
+    if (!Beveiliging.IsAuthenticated())
+    {
+        Response.Redirect("Default");
+    }
+
     Layout = "_Layout.cshtml";
     Page.title = "Modulewijzer";
 
@@ -24,34 +27,17 @@
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
         ModulewijzerId = Convert.ToInt32(Request.QueryString["ModulewijzerId"]);
-        using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "EXEC GetModuleData @ModulewijzerId";
-                command.Parameters.AddWithValue("@ModulewijzerId", ModulewijzerId);
-                command.ExecuteNonQuery();
+        Module module = DbConnection.Instance.Module.GetById(ModulewijzerId);
 
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        naam = reader.GetString(0);
-                        EC = Convert.ToString(reader.GetInt32(1));
-                        studiejaar = Convert.ToString(reader.GetInt32(2));
-                        periode = Convert.ToString(reader.GetInt32(3));
-                        werkvorm = reader.GetString(4);
-                        leeruitkomsten = reader.GetString(5);
-                        literatuur = reader.GetString(6);
-                        planning = reader.GetString(7);
-                    }
-                }
-
-            }
-            connection.Close();
-        }
+        naam = module.Naam;
+        EC = Convert.ToString(module.AantalEcs);
+        studiejaar = Convert.ToString(module.StudieJaar);
+        periode = Convert.ToString(module.Periode);
+        werkvorm = module.Werkvorm;
+        leeruitkomsten = module.Leeruitkomsten;
+        literatuur = module.Literatuur;
+        planning = module.Planning;
     }
     else { Response.Redirect("Default"); }
 

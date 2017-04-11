@@ -125,13 +125,96 @@ namespace Modulewijzer.DataAccess
         }
 
         /// <summary>
+        /// Assigns a docent to a modulewijzer
+        /// </summary>
+        public void Toevoegen(int ModulewijzerId, int DocentId)
+        {
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "EXEC LinkDocent @ModulewijzerId, @DocentId";
+
+                    command.Parameters.AddRange(new SqlParameter[]
+                    {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@DocentId", SqlDbType.Int) { Value =  DocentId},
+                    });
+
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Unassigns a docent to a modulewijzer
+        /// </summary>
+        public void Verwijderen(int ModulewijzerId, int DocentId)
+        {
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "EXEC DropLinkDocenten @ModulewijzerId, @DocentId";
+
+                    command.Parameters.AddRange(new SqlParameter[]
+                    {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@DocentId", SqlDbType.Int) { Value = DocentId },
+                    });
+
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+
+        /// <summary>
         /// Gets a docent with the given ID from the database.
         /// </summary>
         /// <param name="id">The docent's ID.</param>
         /// <returns></returns>
         public Docent GetById(int id)
         {
-            throw new NotImplementedException();
+            string achternaam = "";
+            string voorletters = "";
+            string tussenvoegsel = "";
+
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "EXEC GetDocent @docentId";
+                    command.Parameters.AddWithValue("@docentId", id);
+                    command.ExecuteNonQuery();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            voorletters = reader.GetString(0);
+                            achternaam = reader.GetString(1);
+                            tussenvoegsel = reader.GetString(2);
+                        }
+                    }
+
+                }
+                connection.Close();
+            }
+
+            var docent = new Docent()
+            {
+                Achternaam = achternaam,
+                Tussenvoegsel = tussenvoegsel,
+                Voorletters = voorletters
+            };
+
+            return docent;
         }
     }
 }

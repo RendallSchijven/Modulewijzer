@@ -7,10 +7,6 @@ body {
     margin-bottom: 25px;
 }
 
-footer {
-    margin: 50px 0;
-}
-
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
@@ -24,4 +20,8 @@ th, td {
 
 .navbar-default {
     background-color: Lightgrey;
+}
+
+.header {
+    padding-left: 6vw;
 }

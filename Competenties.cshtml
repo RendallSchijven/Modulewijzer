@@ -1,43 +1,28 @@
 ﻿@using Modulewijzer.DataAccess;
 @using System.Data.SqlClient;
-@using System;
 @using System.Data;
 @using System.Data.SqlClient;
 @{
     Page.Title = "Competenties";
     Layout = "_Layout.cshtml";
 
+    bool ingelogd = true;
+
+    if (!Beveiliging.IsAuthenticated())
+    {
+        ingelogd = false;
+    }
+
     int CompetentieId = 0;
     string Naam = "";
     int Niveau = 0;
     string Competentie_beschrijving = "";
 
-    List<string> groepen = new List<string>();
-
-    using (var connection = new SqlConnection(DbConnection.ConnectionString))
-    {
-        using (var command = connection.CreateCommand())
-        {
-            connection.Open();
-
-            command.CommandText = "EXEC GetGroepen";
-
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    groepen.Add(reader.GetString(0));
-                }
-            }
-
-        }
-        connection.Close();
-    }
+    List<string> groepen = new List<string>(DbConnection.Instance.Competentie.GetGroepen());
 }
 
-
 <div class="table-responsive">
-    <h3>Competenties</h3><br />
+    <h3 class="page-header">Competenties</h3><br />
     @{  int i = 0;
         int j = 0;
         foreach (string s in groepen)
@@ -82,8 +67,13 @@
                                                     @Competentie_beschrijving
                                                 </div>
                                             </td>
-                                            <td><a class="btn btn-primary" href="Competentie_aanpassen?CompetentieId=@CompetentieId"><i class="fa fa-pencil" aria-hidden="true"></i> Aanpassen</a></td>
-                                            <td><a class="btn btn-danger" href="Competentie_verwijderen?CompetentieId=@CompetentieId"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</a></td>
+                                            @{
+                                                if (ingelogd == true)
+                                                {
+                                                    <td><a class="btn btn-primary" href="Competentie_aanpassen?CompetentieId=@CompetentieId"><i class="fa fa-pencil" aria-hidden="true"></i> Aanpassen</a></td>
+                                                    <td><a class="btn btn-danger" href="Competentie_verwijderen?CompetentieId=@CompetentieId"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</a></td>
+                                                }
+                                            }
                                         </tr>
                                         i++;
                                     }
@@ -101,5 +91,6 @@
      }
     <br />
     <a href="~/Default.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>  Terug</a>
-    <a href="~/Competentie_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-plus-square" aria-hidden="true"></i>  Nieuwe competentie aanmaken</a>
+    @if (ingelogd == true)
+    {<a href="~/Competentie_aanmaken.cshtml" class="btn btn-primary" role="button"><i class="fa fa-plus-square" aria-hidden="true"></i>  Nieuwe competentie aanmaken</a>}
 </div>

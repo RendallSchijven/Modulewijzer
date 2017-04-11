@@ -95,6 +95,9 @@ namespace Modulewijzer.DataAccess
             }
         }
 
+        /// <summary>
+        /// Gets the link between a modulewijzer and a competentie
+        /// </summary>
         public int GetLink(int CompetentieId, int ModuleId)
         {
             int result = 0;
@@ -119,11 +122,88 @@ namespace Modulewijzer.DataAccess
                             result = reader.GetInt32(0);
                         }
                     }
-                    //result = (int)checkLink.ExecuteScalar();
                 }
                 connection.Close();
             }
             return result;
+        }
+
+        /// <summary>
+        /// Gets all competentie groups
+        /// </summary>
+        public List<string> GetGroepen()
+        {
+            List<string> groepen = new List<string>();
+
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    command.CommandText = "EXEC GetGroepen";
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            groepen.Add(reader.GetString(0));
+                        }
+                    }
+
+                }
+                connection.Close();
+            }
+
+            return groepen;
+        }
+
+        /// <summary>
+        /// Assigns a competentie to a modulewijzer
+        /// </summary>
+        public void Toevoegen(int ModulewijzerId, int CompetentieId)
+        {
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "EXEC LinkCompetentie @ModulewijzerId, @CompetentieId";
+
+                    command.Parameters.AddRange(new SqlParameter[]
+                    {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = CompetentieId },
+                    });
+
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Unassigns a competentie to a modulewijzer
+        /// </summary>
+        public void Verwijderen(int ModulewijzerId, int CompetentieId)
+        {
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "EXEC DropLinkCompetentie @ModulewijzerId, @CompetentieId";
+
+                    command.Parameters.AddRange(new SqlParameter[]
+                    {
+                        new SqlParameter("@ModulewijzerId", SqlDbType.Int) { Value = ModulewijzerId },
+                        new SqlParameter("@CompetentieId", SqlDbType.Int) { Value = CompetentieId },
+                    });
+
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
         }
 
         /// <summary>
@@ -133,7 +213,45 @@ namespace Modulewijzer.DataAccess
         /// <returns></returns>
         public Competentie GetById(int id)
         {
-            throw new NotImplementedException();
+            string naam = "";
+            int niveau = 0;
+            string competentie_beschrijving = "";
+            string competentie_groep = "";
+
+            using (var connection = new SqlConnection(DbConnection.ConnectionString))
+            {
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "EXEC GetCompetentie @competentieId";
+                    command.Parameters.AddWithValue("@competentieId", id);
+                    command.ExecuteNonQuery();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            naam = reader.GetString(0);
+                            niveau = reader.GetInt32(1);
+                            competentie_beschrijving = reader.GetString(2);
+                            competentie_groep = reader.GetString(3);
+                        }
+                    }
+
+                }
+                connection.Close();
+            }
+
+            var competentie = new Competentie()
+            {
+                Naam = naam,
+                Niveau = niveau,
+                Beschrijving = competentie_beschrijving,
+                Groep = competentie_groep
+            };
+
+            return competentie;
         }
     }
 }

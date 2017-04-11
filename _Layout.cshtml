@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿
+@{
+    bool ingelogd = true;
+
+    if (!Beveiliging.IsAuthenticated())
+    {
+        ingelogd = false;
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -19,17 +29,23 @@
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                    <span class="glyphicon glyphicon-menu-hamburger"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a class="navbar-brand" href="Default">Home</a>
             </div>
             <div>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="~/Docenten.cshtml">Docenten</a></li>
                     <li><a href="~/Competenties.cshtml">Competenties</a></li>
+                    @{ 
+                        if (ingelogd == true)
+                        {
+                            <li><a href="~/Uitloggen.cshtml">Uitloggen <i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
+                        }
+                        else
+                        {
+                            <li><a href="~/Inloggen.cshtml">Inloggen <i class="fa fa-sign-in" aria-hidden="true"></i></a></li>
+                        }
+                    }
+
                 </ul>
             </div>
         </div>

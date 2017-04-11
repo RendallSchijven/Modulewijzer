@@ -1,8 +1,11 @@
-﻿@using System.Data;
-@using System.Data.SqlClient;
-@using Modulewijzer.Models;
+﻿@using Modulewijzer.Models;
 @using Modulewijzer.DataAccess;
 @{
+    if (!Beveiliging.IsAuthenticated())
+    {
+        Response.Redirect("Default");
+    }
+
     Page.Title = "Docent aanpassen";
     Layout = "_Layout.cshtml";
 
@@ -23,30 +26,14 @@
     if (!Request.QueryString["docentId"].IsEmpty())
     {
         docentId = Convert.ToInt32(Request.QueryString["docentId"]);
-        using (var connection = new SqlConnection(DbConnection.ConnectionString))
-        {
-            connection.Open();
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "EXEC GetDocent @docentId";
-                command.Parameters.AddWithValue("@docentId", docentId);
-                command.ExecuteNonQuery();
+        Docent docent = DbConnection.Instance.Docenten.GetById(docentId);
 
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        voorletters = reader.GetString(0);
-                        achternaam = reader.GetString(1);
-                        tussenvoegsel = reader.GetString(2);
-                    }
-                }
-
-            }
-            connection.Close();
-        }
+        voorletters = docent.Voorletters;
+        achternaam = docent.Achternaam;
+        tussenvoegsel = docent.Tussenvoegsel;
     }
+
     else { Response.Redirect("Docenten"); }
 
     if (IsPost && Validation.IsValid())
@@ -73,7 +60,7 @@
     <div class="col-md-5 portfolio-item">
         <form class="form-horizontal" method="post">
             <div class="form-group">
-                <h3>Docent aanpassen</h3>
+                <h3 class="page-header">Docent aanpassen</h3>
             </div>
 
             <div class="form-group">
