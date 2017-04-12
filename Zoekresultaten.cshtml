@@ -53,6 +53,11 @@
     }
 
     else { Response.Redirect("Default"); };
+
+    if (zoekterm == "")
+    {
+        Response.Redirect("Default");
+    }
 }
 
 
@@ -90,5 +95,5 @@
         }
      }
     <br>
-    <a href="Default" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+    <a href="Default" class="btn btn-primary" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
 </div>
