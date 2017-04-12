@@ -23,6 +23,7 @@
     string leeruitkomsten = "";
     string literatuur = "";
     string planning = "";
+    string error = "";
 
     if (!Request.QueryString["ModulewijzerId"].IsEmpty())
     {
@@ -41,29 +42,47 @@
     }
     else { Response.Redirect("Default"); }
 
+
     if (IsPost && Validation.IsValid())
     {
-        var module = new Module()
-        {
-            Id = ModulewijzerId,
-            Naam = Request.Form["Naam"],
-            AantalEcs = Convert.ToInt32(Request.Form["EC"]),
-            StudieJaar = Convert.ToInt32(Request.Form["Studiejaar"]),
-            Periode = Convert.ToInt32(Request.Form["Periode"]),
-            Werkvorm = Request.Form["Werkvorm"],
-            Leeruitkomsten = Request.Form["Leeruitkomsten"],
-            Literatuur = Request.Form["Literatuur"],
-            Planning = Request.Form["Planning"]
-        };
+        int ec = Convert.ToInt32(Request.Form["EC"]);
+        int _studiejaar = Convert.ToInt32(Request.Form["Studiejaar"]);
+        int _periode = Convert.ToInt32(Request.Form["Periode"]);
 
-        DbConnection.Instance.Module.Update(module);
-        Response.Redirect($"Modulewijzer_bekijken?ModulewijzerId={ModulewijzerId}");
+        error = DbConnection.Instance.Module.GreaterZero(ec, _studiejaar, _periode);
+        Validation.RequireField("error", " ");
+
+        if (Validation.IsValid())
+        {
+            var module = new Module()
+            {
+                Id = ModulewijzerId,
+                Naam = Request.Form["Naam"],
+                AantalEcs = Convert.ToInt32(Request.Form["EC"]),
+                StudieJaar = Convert.ToInt32(Request.Form["Studiejaar"]),
+                Periode = Convert.ToInt32(Request.Form["Periode"]),
+                Werkvorm = Request.Form["Werkvorm"],
+                Leeruitkomsten = Request.Form["Leeruitkomsten"],
+                Literatuur = Request.Form["Literatuur"],
+                Planning = Request.Form["Planning"]
+            };
+
+            DbConnection.Instance.Module.Update(module);
+            Response.Redirect($"Modulewijzer_bekijken?ModulewijzerId={ModulewijzerId}");
+        }
     }
 }
 
 <div class="row">
     <div class="col-md-5 portfolio-item">
         <form class="form-horizontal" method="post">
+
+            @if (error != "")
+            {
+                <div class="alert alert-danger form-group">
+                    <strong>Error:</strong> @error <hidden>@Html.ValidationMessage("error")</hidden>
+                </div>
+            }
 
             <div class="form-group">
                 <label for="Naam">Naam modulewijzer<span style="color: red;">*@Html.ValidationMessage("Naam")</span></label>
@@ -72,17 +91,17 @@
 
             <div class="form-group">
                 <label for="EC">Aantal EC`s<span style="color: red;">*@Html.ValidationMessage("EC")</span></label>
-                <input class="form-control" type="text" id="EC" name="EC" placeholder="Aantal EC`S" value="@EC">
+                <input class="form-control" type="number" id="EC" name="EC" placeholder="Aantal EC`S" value="@EC">
             </div>
 
             <div class="form-group">
                 <label for="Studiejaar">Studiejaar<span style="color: red;">*@Html.ValidationMessage("Studiejaar")</span></label>
-                <input class="form-control" type="text" id="Studiejaar" name="Studiejaar" placeholder="Studiejaar" value="@studiejaar">
+                <input class="form-control" type="number" id="Studiejaar" name="Studiejaar" placeholder="Studiejaar" value="@studiejaar">
             </div>
 
             <div class="form-group">
                 <label for="Periode">Periode<span style="color: red;">*@Html.ValidationMessage("Periode")</span></label>
-                <input class="form-control" type="text" id="Periode" name="Periode" placeholder="Periode" value="@periode">
+                <input class="form-control" type="number" id="Periode" name="Periode" placeholder="Periode" value="@periode">
             </div>
 
             <div class="form-group">
@@ -106,9 +125,9 @@
             </div>
 
             <div class="form-group">
-                <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                <a href="Modulewijzer_bekijken?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
                 <div style="float: right;">
-                    <button type="submit" name="Modulewijzer_edit" class="btn btn-primary" value="Modulewijzer_edit"><i class="fa fa-save" aria-hidden="true"></i>  Modulewijzer aanpassen</button>
+                    <button type="submit" name="Modulewijzer_edit" class="btn btn-success" value="Modulewijzer_edit"><i class="fa fa-save" aria-hidden="true"></i>  Modulewijzer aanpassen</button>
                 </div>
             </div>
         </form>

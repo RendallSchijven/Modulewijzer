@@ -57,7 +57,8 @@
 }
 
 <div class="row">
-    <div class="col-md-5 portfolio-item">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 portfolio-item">
         <form class="form-horizontal" method="post">
             <div class="form-group">
                 <h3 class="page-header">Docent aanpassen</h3>
@@ -65,31 +66,34 @@
 
             <div class="form-group">
                 <label for="Voorletters">Voorletters<span style="color: red;">*@Html.ValidationMessage("Voorletters")</span></label><br>
-                <input type="text" id="Voorletters" name="Voorletters" placeholder="J.J" value="@voorletters">
+                <input type="text" id="Voorletters" name="Voorletters" placeholder="J.J" value="@voorletters" size="60">
             </div>
 
             <div class="form-group">
                 <label for="Achternaam">Achternaam<span style="color: red;">*@Html.ValidationMessage("Achternaam")</span></label><br>
-                <input type="text" id="Achternaam" name="Achternaam" placeholder="De Boer" value="@achternaam">
+                <input type="text" id="Achternaam" name="Achternaam" placeholder="De Boer" value="@achternaam" size="60">
             </div>
 
             <div class="form-group">
                 <label for="Tussenvoegsel">Tussenvoegsel</label><br>
-                <input type="text" id="Tussenvoegsel" name="Tussenvoegsel" placeholder="van" value="@tussenvoegsel">
+                <input type="text" id="Tussenvoegsel" name="Tussenvoegsel" placeholder="van" value="@tussenvoegsel" size="60">
             </div>
 
             <div class="form-group">
                 @if (ModulewijzerId != 0)
                 {
-                    <a href="Docent_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                    <a href="Docent_toevoegen?ModulewijzerId=@ModulewijzerId" class="btn btn-primary" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
                 }
                 else
                 {
-                    <a href="~/Docenten.cshtml" class="btn btn-default" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
+                    <a href="~/Docenten.cshtml" class="btn btn-primary" role="button"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Terug</a>
                 }
-                <button type="submit" name="Docent_aanpassen" class="btn btn-primary" value="Docent_aanpassen"><i class="fa fa-user-plus" aria-hidden="true"></i> Docent aanpassen</button>
-                <a class="btn btn-danger" href="Docent_verwijderen?docentId=@docentId&ModulewijzerId=@ModulewijzerId"><i class="fa fa-trash" aria-hidden="true"></i> Docent verwijderen</a>
+                <div style="float:right;">
+                    <button type="submit" name="Docent_aanpassen" class="btn btn-success" value="Docent_aanpassen"><i class="fa fa-save" aria-hidden="true"></i> Aanpassen</button>
+                    <a class="btn btn-danger" href="Docent_verwijderen?docentId=@docentId&ModulewijzerId=@ModulewijzerId"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</a>
+                </div>
             </div>
         </form>
     </div>
+    <div class="col-md-4"></div>
 </div>

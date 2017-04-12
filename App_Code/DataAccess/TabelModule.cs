@@ -233,6 +233,24 @@ namespace Modulewijzer.DataAccess
             return module;
         }
 
+
+        public string GreaterZero(int ec, int studiejaar, int periode)
+        {
+            if (ec < 0)
+            {
+                return "Aantal EC`s moet groter zijn dan 0.";
+            }
+            if (studiejaar < 0)
+            {
+                return "Studiejaar moet groter zijn dan 0.";
+            }
+            if (periode < 0)
+            {
+                return "Periode moet groter zijn dan 0.";
+            }
+            return "";
+        }
+
         public List<Module> Search(SearchTerm term)
         {
             using (var connection = new SqlConnection(DbConnection.ConnectionString))
