@@ -25,7 +25,7 @@
         error = DbConnection.Instance.Module.GreaterZero(ec, studiejaar, periode);
         Validation.RequireField("error", " ");
 
-        if (Validation.IsValid())
+        if (error == "")
         {
             var module = new Module()
             {
