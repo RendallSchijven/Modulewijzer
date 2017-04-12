@@ -72,33 +72,99 @@
 
             <div class="form-group">
                 <label for="Groep">Groep<span style="color: red;">*@Html.ValidationMessage("Groep")</span></label><br>
-                Huidig = @competentie_groep<br />
-                Nieuw: <select id="Groep" name="Groep">
-                    <option value="Software">Software</option>
-                    <option value="Befrijfsprocessen">Befrijfsprocessen</option>
-                    <option value="Gebruikersinteractie">Gebruikersinteractie</option>
+                <select id="Groep" name="Groep">
+                    @{
+                        switch (competentie_groep)
+                        {
+                            case "Bedrijfsprocessen":
+                                <option value="Software">Software</option>
+                                <option value="Befrijfsprocessen" selected>Befrijfsprocessen</option>
+                                <option value="Gebruikersinteractie">Gebruikersinteractie</option>
+                                break;
+                            case "Gebruikersinteractie":
+                                <option value="Software">Software</option>
+                                <option value="Befrijfsprocessen">Befrijfsprocessen</option>
+                                <option value="Gebruikersinteractie" selected>Gebruikersinteractie</option>
+                                break;
+                            default:
+                                <option value="Software">Software</option>
+                                <option value="Befrijfsprocessen">Befrijfsprocessen</option>
+                                <option value="Gebruikersinteractie">Gebruikersinteractie</option>
+                                break;
+                        }
+                    }
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="Naam">Naam<span style="color: red;">*@Html.ValidationMessage("Naam")</span></label><br>
-                Huidig: @naam<br />
-                Nieuw: <select id="Naam" name="Naam">
-                    <option value="Beheren">Beheren</option>
-                    <option value="Analyseren">Analyseren</option>
-                    <option value="Adviseren">Adviseren</option>
-                    <option value="Ontwerpen">Ontwerpen</option>
-                    <option value="Realiseren">Realiseren</option>
+                <select id="Naam" name="Naam">
+                    @{
+                        switch (naam)
+                        {
+                            case "Analyseren":
+                                <option value="Beheren">Beheren</option>
+                                <option value="Analyseren" selected>Analyseren</option>
+                                <option value="Adviseren">Adviseren</option>
+                                <option value="Ontwerpen">Ontwerpen</option>
+                                <option value="Realiseren">Realiseren</option>
+                                break;
+                            case "Adviseren":
+                                <option value="Beheren">Beheren</option>
+                                <option value="Analyseren">Analyseren</option>
+                                <option value="Adviseren" selected>Adviseren</option>
+                                <option value="Ontwerpen">Ontwerpen</option>
+                                <option value="Realiseren">Realiseren</option>
+                                break;
+                            case "Ontwerpen":
+                                <option value="Beheren">Beheren</option>
+                                <option value="Analyseren">Analyseren</option>
+                                <option value="Adviseren">Adviseren</option>
+                                <option value="Ontwerpen" selected>Ontwerpen</option>
+                                <option value="Realiseren">Realiseren</option>
+                                break;
+                            case "Realiseren":
+                                <option value="Beheren">Beheren</option>
+                                <option value="Analyseren">Analyseren</option>
+                                <option value="Adviseren">Adviseren</option>
+                                <option value="Ontwerpen">Ontwerpen</option>
+                                <option value="Realiseren" selected>Realiseren</option>
+                                break;
+                            default:
+                                <option value="Beheren">Beheren</option>
+                                <option value="Analyseren">Analyseren</option>
+                                <option value="Adviseren">Adviseren</option>
+                                <option value="Ontwerpen">Ontwerpen</option>
+                                <option value="Realiseren">Realiseren</option>
+                                break;
+                        }
+                    }
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="Niveau">Niveau<span style="color: red;">*@Html.ValidationMessage("Niveau")</span></label><br>
-                Huidig: @niveau<br />
-                Nieuw: <select id="Niveau" name="Niveau">
-                    <option value=1>1</option>
-                    <option value=2>2</option>
-                    <option value=3>3</option>
+                <select id="Niveau" name="Niveau">
+                    @{
+                        switch (niveau)
+                        {
+                            case 2:
+                                <option value=1>1</option>
+                                <option value=2 selected>2</option>
+                                <option value=3>3</option>
+                                break;
+                            case 3:
+                                <option value=1>1</option>
+                                <option value=2>2</option>
+                                <option value=3 selected>3</option>
+                                break;
+                            default:
+                                <option value=1>1</option>
+                                <option value=2>2</option>
+                                <option value=3>3</option>
+                                break;
+                        }
+                    }
                 </select>
             </div>
 
