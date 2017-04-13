@@ -32,10 +32,7 @@
                 <h4><a data-toggle="collapse" data-target="#groep_@j" href="#groep_@j">@s <i class="fa fa-caret-square-o-down" aria-hidden="true"></i></a></h4>
             </div>
             <div id="groep_@j" class="panel-collapse collapse @collapse">
-                @if (i == 0)
-                {
-                    collapse = "out";
-                }
+                    @{collapse = "out";}
                 <table class="table-bordered">
                     <tr>
                         <th>Naam</th>

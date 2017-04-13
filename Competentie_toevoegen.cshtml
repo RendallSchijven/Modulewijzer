@@ -46,12 +46,14 @@
     <h3 class="page-header">Competenties</h3><br />
     @{  int i = 0;
         int j = 0;
+        string collapse = "in";
         foreach (string s in groepen)
         {
             <div>
                 <h4><a data-toggle="collapse" data-target="#groep_@j" href="#groep_@j">@s <i class="fa fa-caret-square-o-down" aria-hidden="true"></i></a></h4>
             </div>
-            <div id="groep_@j" class="panel-collapse collapse in">
+            <div id="groep_@j" class="panel-collapse collapse @collapse">
+                @{collapse = "out";}
                 <table class="table-bordered">
                     <tr>
                         <th>Naam</th>
